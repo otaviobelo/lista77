@@ -18,6 +18,7 @@
     .disabled { opacity: 0.5; pointer-events: none; }
     .selected { background-color: #c8e6c9; border: 2px solid green; color: black; }
     .game-info { margin-bottom: 15px; font-weight: bold; }
+    .buttons-container { display: flex; justify-content: center; gap: 10px; }
     @media (max-width: 600px) {
       .container { padding: 15px; }
       button { width: 100%; max-width: 200px; margin: 8px auto; display: block; }
@@ -25,6 +26,7 @@
       .message { font-size: 16px; }
       h1 { font-size: 22px; }
       h3 { font-size: 18px; }
+      .buttons-container { flex-direction: column; }
     }
   </style>
 </head>
@@ -38,7 +40,10 @@
     <div class="word-block" id="block-word3"><h3 id="label-word3"></h3><p>Escolha uma definição:</p><div id="buttons-word3"></div><p id="def-word3" class="definition hidden"></p></div>
 
     <input type="text" id="guess" placeholder="Digite o nome da cidade" /><br />
-    <button onclick="checkGuess()">Enviar</button>
+    <div class="buttons-container">
+      <button onclick="checkGuess()">Enviar</button>
+      <button onclick="skipCity()">Pular</button>
+    </div>
     <div class="message" id="message"></div>
     <button id="retry-button" onclick="resetGame()" style="display:none;">🔄 Tentar outra cidade</button>
   </div>
@@ -55,6 +60,7 @@
     let gameOver;
     let selectedDefinitions = {};
     let currentCityIndex = 0;
+    let skippedCities = 0;
 
     function normalize(text) {
       return text.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ç/g, "c").toLowerCase().trim();
@@ -115,6 +121,20 @@
         const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
         buttons.forEach(btn => btn.classList.add("disabled"));
       });
+    }
+
+    function skipCity() {
+      skippedCities++;
+      if (remainingCities.length === 0) {
+        document.getElementById("message").innerHTML = "<span class='correct'>🎉 Você completou todas as cidades! Obrigado por jogar!</span>";
+        document.getElementById("retry-button").style.display = "none";
+        return;
+      }
+      
+      const messageDiv = document.getElementById("message");
+      messageDiv.innerHTML = `<span class="incorrect">🏃 Cidade pulada: <strong>${currentCity.name}</strong>. Você já pulou ${skippedCities} cidade(s).</span>`;
+      
+      resetGame();
     }
 
     function checkGuess() {
