@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -5,7 +6,7 @@
   <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f2f2f2; padding: 20px; margin: 0; text-align: center; transition: background-color 0.6s ease; }
+    body { font-family: Arial, sans-serif; background: #f2f2f2; padding: 20px; margin: 0; text-align: center; }
     .container { background: #fff; border-radius: 10px; padding: 25px; max-width: 750px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
     .word-block { margin-bottom: 25px; }
     .definition { margin: 15px 0; }
@@ -17,7 +18,6 @@
     .incorrect { color: red; }
     .disabled { opacity: 0.5; pointer-events: none; }
     .selected { background-color: #c8e6c9; border: 2px solid green; color: black; }
-    .counter { font-size: 16px; margin-bottom: 10px; font-weight: bold; }
     @media (max-width: 600px) {
       .container { padding: 15px; }
       button { width: 100%; max-width: 200px; margin: 8px auto; display: block; }
@@ -31,7 +31,6 @@
 <body>
   <div class="container">
     <h1>Que cidade é essa?</h1>
-    <div class="counter" id="city-counter"></div>
 
     <div class="word-block" id="block-word1"><h3 id="label-word1"></h3><p>Escolha uma definição:</p><div id="buttons-word1"></div><p id="def-word1" class="definition hidden"></p></div>
     <div class="word-block" id="block-word2"><h3 id="label-word2"></h3><p>Escolha uma definição:</p><div id="buttons-word2"></div><p id="def-word2" class="definition hidden"></p></div>
@@ -54,23 +53,104 @@
     let attempts;
     let gameOver;
     let selectedDefinitions = {};
-    let questionNumber = 0;
-    const bgColors = ["#fff8dc", "#e6f7ff", "#f0fff0", "#fff0f5", "#f5f5dc", "#fdf5e6", "#f0f8ff"];
 
     function normalize(text) {
-      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").toLowerCase().trim();
+      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ç/g, "c").toLowerCase().trim();
     }
 
-    function updateCounter() {
-      const total = allCities.length;
-      const remaining = remainingCities.length;
-      const counter = document.getElementById("city-counter");
-      counter.textContent = `Pergunta ${questionNumber} de ${total} — Faltam ${remaining}`;
+    function createDefinitionButtons(wordKey, wordIndex) {
+      const container = document.getElementById(`buttons-${wordKey}`);
+      container.innerHTML = "";
+      for (let i = 0; i < 5; i++) {
+        const btn = document.createElement("button");
+        btn.textContent = i + 1;
+        btn.onclick = () => selectDefinition(wordKey, wordIndex, i + 1);
+        container.appendChild(btn);
+      }
     }
 
-    function changeBackgroundColor() {
-      const color = bgColors[Math.floor(Math.random() * bgColors.length)];
-      document.body.style.backgroundColor = color;
+    function selectDefinition(wordKey, wordIndex, index) {
+      if (gameOver || selectedDefinitions[wordKey] !== null) return;
+      const defText = currentCity.words[wordIndex].definitions[index - 1];
+      document.getElementById(`def-${wordKey}`).textContent = defText;
+      document.getElementById(`def-${wordKey}`).classList.remove("hidden");
+      const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
+      buttons.forEach((btn, i) => {
+        if (i === index - 1) btn.classList.add("selected");
+        else btn.classList.add("disabled");
+      });
+      selectedDefinitions[wordKey] = index;
+    }
+
+    function enableRemainingButtons() {
+      Object.keys(selectedDefinitions).forEach((wordKey) => {
+        const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
+        if (!gameOver && selectedDefinitions[wordKey] !== null) {
+          buttons.forEach((btn, j) => {
+            if (j !== selectedDefinitions[wordKey] - 1) btn.classList.remove("disabled");
+          });
+          selectedDefinitions[wordKey] = null;
+        }
+      });
+    }
+
+    function disableAllButtons() {
+      Object.keys(selectedDefinitions).forEach(wordKey => {
+        const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
+        buttons.forEach(btn => btn.classList.add("disabled"));
+      });
+    }
+
+    function checkGuess() {
+      if (gameOver) return;
+      const guessInput = document.getElementById("guess");
+      const messageDiv = document.getElementById("message");
+      const retryBtn = document.getElementById("retry-button");
+      const userGuess = normalize(guessInput.value);
+
+      if (userGuess === correctAnswer) {
+        messageDiv.innerHTML = `<span class="correct">🎉 Parabéns! Você acertou: <strong>${currentCity.name}</strong>.</span>`;
+        gameOver = true;
+        disableAllButtons();
+        retryBtn.style.display = "inline-block";
+        document.getElementById("audio-success").play();
+      } else {
+        attempts--;
+        if (attempts === 0) {
+          messageDiv.innerHTML = `<span class="incorrect">😢 Suas tentativas acabaram! A cidade correta era <strong>${currentCity.name}</strong>.</span>`;
+          gameOver = true;
+          disableAllButtons();
+          retryBtn.style.display = "inline-block";
+          document.getElementById("audio-fail").play();
+        } else {
+          messageDiv.innerHTML = `<span class="incorrect">❌ Resposta incorreta. Você ainda tem ${attempts} tentativa(s).</span>`;
+          enableRemainingButtons();
+        }
+      }
+
+      guessInput.value = "";
+    }
+
+    function initializeGame() {
+      const totalWords = currentCity.words.length;
+      for (let i = 0; i < 3; i++) {
+        const wordKey = `word${i + 1}`;
+        const block = document.getElementById(`block-${wordKey}`);
+        const def = document.getElementById(`def-${wordKey}`);
+        def.classList.add("hidden");
+        def.textContent = "";
+        if (i < totalWords) {
+          block.style.display = "block";
+          document.getElementById(`label-${wordKey}`).textContent = currentCity.words[i].label;
+          createDefinitionButtons(wordKey, i);
+          selectedDefinitions[wordKey] = null;
+        } else {
+          block.style.display = "none";
+        }
+      }
+      document.getElementById("guess").value = "";
+      document.getElementById("message").innerHTML = "";
+      document.getElementById("retry-button").style.display = "none";
     }
 
     function resetGame() {
@@ -84,10 +164,7 @@
       attempts = 5;
       gameOver = false;
       selectedDefinitions = {};
-      questionNumber++;
       initializeGame();
-      updateCounter();
-      changeBackgroundColor();
       window.scrollTo(0, 0);
     }
 
@@ -97,11 +174,13 @@
         .then(data => {
           allCities = data;
           remainingCities = [...allCities];
+
+          // Embaralhar as cidades com algoritmo Fisher-Yates
           for (let i = remainingCities.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [remainingCities[i], remainingCities[j]] = [remainingCities[j], remainingCities[i]];
           }
-          questionNumber = 0;
+
           resetGame();
         })
         .catch(err => {
