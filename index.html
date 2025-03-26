@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,7 +13,6 @@
       margin: 0;
       text-align: center;
     }
-
     .container {
       background: #fff;
       border-radius: 10px;
@@ -21,19 +21,9 @@
       margin: auto;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-
-    .word-block {
-      margin-bottom: 25px;
-    }
-
-    .definition {
-      margin: 15px 0;
-    }
-
-    .hidden {
-      display: none;
-    }
-
+    .word-block { margin-bottom: 25px; }
+    .definition { margin: 15px 0; }
+    .hidden { display: none; }
     input[type="text"] {
       padding: 10px;
       width: 90%;
@@ -41,7 +31,6 @@
       margin-bottom: 15px;
       font-size: 16px;
     }
-
     button {
       padding: 10px;
       margin: 5px;
@@ -49,63 +38,37 @@
       cursor: pointer;
       min-width: 40px;
     }
-
     .message {
       margin-top: 20px;
       font-weight: bold;
       font-size: 18px;
     }
-
-    .correct {
-      color: green;
-    }
-
-    .incorrect {
-      color: red;
-    }
-
+    .correct { color: green; }
+    .incorrect { color: red; }
     .disabled {
       opacity: 0.5;
       pointer-events: none;
     }
-
     .selected {
       background-color: #c8e6c9;
       border: 2px solid green;
       color: black;
     }
-
     @media (max-width: 600px) {
-      .container {
-        padding: 15px;
-      }
-
+      .container { padding: 15px; }
       button {
         width: 100%;
         max-width: 200px;
         margin: 8px auto;
         display: block;
       }
-
-      input[type="text"] {
-        width: 100%;
-      }
-
-      .message {
-        font-size: 16px;
-      }
-
-      h1 {
-        font-size: 22px;
-      }
-
-      h3 {
-        font-size: 18px;
-      }
+      input[type="text"] { width: 100%; }
+      .message { font-size: 16px; }
+      h1 { font-size: 22px; }
+      h3 { font-size: 18px; }
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <h1>Que cidade é essa?</h1>
@@ -131,83 +94,18 @@
       <p id="def-word3" class="definition hidden"></p>
     </div>
 
-    <input type="text" id="guess" placeholder="Digite o nome da cidade">
-    <br>
+    <input type="text" id="guess" placeholder="Digite o nome da cidade"><br>
     <button onclick="checkGuess()">Enviar</button>
-
     <div class="message" id="message"></div>
     <button id="retry-button" onclick="resetGame()" style="display:none;">🔄 Tentar outra cidade</button>
   </div>
 
-  <!-- Sons -->
   <audio id="audio-success" src="success.mp3" preload="auto"></audio>
   <audio id="audio-fail" src="fail.mp3" preload="auto"></audio>
 
   <script>
-    const allCities = [
-      {
-        name: "Poços de Caldas",
-        words: [
-          {
-            label: "Primeira palavra (forma no plural)",
-            definitions: [
-              "Cavidade escavada verticalmente no solo para atingir camadas profundas.",
-              "Abertura que permite acessar líquidos ou minérios abaixo da superfície.",
-              "Depressão natural no terreno onde pode haver acúmulo de líquido.",
-              "Estrutura usada para extração de substâncias subterrâneas.",
-              "Profundidade simbólica que representa estado extremo ou acentuado."
-            ]
-          },
-          {
-            label: "Segunda palavra",
-            definitions: [
-              "Preposição que expressa posse ou pertencimento entre elementos.",
-              "Palavra usada para indicar procedência ou origem.",
-              "Elemento que relaciona um substantivo a outro em construções nominais.",
-              "Forma que introduz causa ou motivo em frases.",
-              "Conector que exprime conteúdo, matéria ou finalidade."
-            ]
-          },
-          {
-            label: "Terceira palavra (forma no plural)",
-            definitions: [
-              "Líquido espesso obtido pela fervura de substâncias em água.",
-              "Mistura densa utilizada em preparações culinárias ou industriais.",
-              "Substância aquosa geralmente quente e rica em minerais.",
-              "Designação comum para locais com fontes de águas terapêuticas.",
-              "Plural de termo associado a líquidos densos e aquecidos."
-            ]
-          }
-        ]
-      },
-      {
-        name: "Pouso Alegre",
-        words: [
-          {
-            label: "Primeira palavra",
-            definitions: [
-              "Ato de se colocar em repouso após deslocamento.",
-              "Parada de descanso durante uma viagem.",
-              "Acomodação temporária em local tranquilo.",
-              "Ato de aterrissar ou descansar em superfície.",
-              "Interrupção voluntária de movimento para repouso."
-            ]
-          },
-          {
-            label: "Segunda palavra",
-            definitions: [
-              "Sentimento de prazer e satisfação interior.",
-              "Estado de espírito caracterizado por leveza e bem-estar.",
-              "Qualidade daquilo que é sereno e encantador.",
-              "Sensação positiva ligada à tranquilidade e felicidade.",
-              "Caráter de algo ou alguém que transmite otimismo."
-            ]
-          }
-        ]
-      }
-    ];
-
-    let remainingCities = [...allCities];
+    let allCities = [];
+    let remainingCities = [];
     let currentCity;
     let correctAnswer;
     let attempts;
@@ -215,7 +113,7 @@
     let selectedDefinitions = {};
 
     function normalize(text) {
-      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ç/g, "c").toLowerCase().trim();
+      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ç/g, "c").toLowerCase().trim();
     }
 
     function createDefinitionButtons(wordKey, wordIndex) {
@@ -231,31 +129,23 @@
 
     function selectDefinition(wordKey, wordIndex, index) {
       if (gameOver || selectedDefinitions[wordKey] !== null) return;
-
       const defText = currentCity.words[wordIndex].definitions[index - 1];
       document.getElementById(`def-${wordKey}`).textContent = defText;
       document.getElementById(`def-${wordKey}`).classList.remove("hidden");
-
       const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
       buttons.forEach((btn, i) => {
-        if (i === index - 1) {
-          btn.classList.add("selected");
-        } else {
-          btn.classList.add("disabled");
-        }
+        if (i === index - 1) btn.classList.add("selected");
+        else btn.classList.add("disabled");
       });
-
       selectedDefinitions[wordKey] = index;
     }
 
     function enableRemainingButtons() {
-      Object.keys(selectedDefinitions).forEach((wordKey, i) => {
+      Object.keys(selectedDefinitions).forEach((wordKey) => {
         const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
         if (!gameOver && selectedDefinitions[wordKey] !== null) {
           buttons.forEach((btn, j) => {
-            if (j !== selectedDefinitions[wordKey] - 1) {
-              btn.classList.remove("disabled");
-            }
+            if (j !== selectedDefinitions[wordKey] - 1) btn.classList.remove("disabled");
           });
           selectedDefinitions[wordKey] = null;
         }
@@ -271,7 +161,6 @@
 
     function checkGuess() {
       if (gameOver) return;
-
       const guessInput = document.getElementById("guess");
       const messageDiv = document.getElementById("message");
       const retryBtn = document.getElementById("retry-button");
@@ -302,7 +191,6 @@
 
     function initializeGame() {
       const totalWords = currentCity.words.length;
-
       for (let i = 0; i < 3; i++) {
         const wordKey = `word${i + 1}`;
         const block = document.getElementById(`block-${wordKey}`);
@@ -318,7 +206,6 @@
           block.style.display = "none";
         }
       }
-
       document.getElementById("guess").value = "";
       document.getElementById("message").innerHTML = "";
       document.getElementById("retry-button").style.display = "none";
@@ -330,8 +217,7 @@
         document.getElementById("retry-button").style.display = "none";
         return;
       }
-
-      currentCity = remainingCities.shift(); // Pega e remove a próxima cidade
+      currentCity = remainingCities.shift();
       correctAnswer = normalize(currentCity.name);
       attempts = 5;
       gameOver = false;
@@ -340,7 +226,19 @@
       window.scrollTo(0, 0);
     }
 
-    window.onload = resetGame;
+    window.onload = () => {
+      fetch("cidades.json")
+        .then(res => res.json())
+        .then(data => {
+          allCities = data;
+          remainingCities = [...allCities];
+          resetGame();
+        })
+        .catch(err => {
+          document.getElementById("message").innerHTML = "<span class='incorrect'>Erro ao carregar as cidades.</span>";
+          console.error("Erro ao carregar cidades.json", err);
+        });
+    };
   </script>
 </body>
 </html>
