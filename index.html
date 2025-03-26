@@ -5,8 +5,8 @@
   <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f2f2f2; padding: 20px; margin: 0; text-align: center; transition: background-color 0.6s ease; }
-    .container { background: #fff; border-radius: 10px; padding: 25px; max-width: 750px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    body { font-family: Arial, sans-serif; background: #ffffff; padding: 20px; margin: 0; text-align: center; }
+    .container { border-radius: 10px; padding: 25px; max-width: 750px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); transition: background-color 0.6s ease; }
     .word-block { margin-bottom: 25px; }
     .definition { margin: 15px 0; }
     .hidden { display: none; }
@@ -29,7 +29,7 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="game-container">
     <h1>Que cidade é essa?</h1>
     <div class="counter" id="city-counter"></div>
 
@@ -54,7 +54,8 @@
     let attempts;
     let gameOver;
     let selectedDefinitions = {};
-    let questionNumber = 0;
+    let totalCities = 0;
+
     const bgColors = ["#fff8dc", "#e6f7ff", "#f0fff0", "#fff0f5", "#f5f5dc", "#fdf5e6", "#f0f8ff"];
 
     function normalize(text) {
@@ -62,15 +63,31 @@
     }
 
     function updateCounter() {
-      const total = allCities.length;
-      const remaining = remainingCities.length;
+      const completed = totalCities - remainingCities.length;
       const counter = document.getElementById("city-counter");
-      counter.textContent = `Pergunta ${questionNumber + 1} de ${total} — Faltam ${remaining}`;
+      counter.textContent = `Pergunta ${completed + 1} de ${totalCities} — Faltam ${remainingCities.length}`;
     }
 
     function changeBackgroundColor() {
       const color = bgColors[Math.floor(Math.random() * bgColors.length)];
-      document.body.style.backgroundColor = color;
+      document.getElementById("game-container").style.backgroundColor = color;
+    }
+
+    function resetGame() {
+      if (remainingCities.length === 0) {
+        document.getElementById("message").innerHTML = "<span class='correct'>🎉 Você completou todas as cidades! Obrigado por jogar!</span>";
+        document.getElementById("retry-button").style.display = "none";
+        return;
+      }
+      currentCity = remainingCities.shift();
+      correctAnswer = normalize(currentCity.name);
+      attempts = 5;
+      gameOver = false;
+      selectedDefinitions = {};
+      initializeGame();
+      changeBackgroundColor();
+      updateCounter();
+      window.scrollTo(0, 0);
     }
 
     function initializeGame() {
@@ -93,23 +110,6 @@
       document.getElementById("guess").value = "";
       document.getElementById("message").innerHTML = "";
       document.getElementById("retry-button").style.display = "none";
-    }
-
-    function resetGame() {
-      if (remainingCities.length === 0) {
-        document.getElementById("message").innerHTML = "<span class='correct'>🎉 Você completou todas as cidades! Obrigado por jogar!</span>";
-        document.getElementById("retry-button").style.display = "none";
-        return;
-      }
-      currentCity = remainingCities.shift();
-      correctAnswer = normalize(currentCity.name);
-      attempts = 5;
-      gameOver = false;
-      selectedDefinitions = {};
-      initializeGame();
-      changeBackgroundColor();
-      updateCounter();
-      window.scrollTo(0, 0);
     }
 
     function createDefinitionButtons(wordKey, wordIndex) {
@@ -184,25 +184,6 @@
 
       guessInput.value = "";
     }
-
-    window.onload = () => {
-      fetch("cidades.json")
-        .then(res => res.json())
-        .then(data => {
-          allCities = data;
-          remainingCities = [...allCities];
-          for (let i = remainingCities.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [remainingCities[i], remainingCities[j]] = [remainingCities[j], remainingCities[i]];
-          }
-          questionNumber = 0;
-          resetGame();
-        })
-        .catch(err => {
-          document.getElementById("message").innerHTML = "<span class='incorrect'>Erro ao carregar as cidades.</span>";
-          console.error("Erro ao carregar cidades.json", err);
-        });
-    };
   </script>
 </body>
 </html>
