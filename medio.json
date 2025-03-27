@@ -1,0 +1,233 @@
+[
+  {
+    "name": "Boa Esperança",
+    "words": [
+      {
+        "label": "Boa",
+        "definitions": [
+          "Forma feminina de 'bom'; que tem qualidade ou valor.",
+          "Que apresenta comportamento virtuoso ou agradável.",
+          "Que proporciona prazer, bem-estar ou satisfação."
+        ]
+      },
+      {
+        "label": "Esperança",
+        "definitions": [
+          "Sentimento de confiança em conseguir algo positivo.",
+          "Expectativa otimista sobre o futuro.",
+          "Crença em um resultado favorável."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Bom Repouso",
+    "words": [
+      {
+        "label": "Bom",
+        "definitions": [
+          "Que tem boas qualidades; que é satisfatório.",
+          "Que é útil, eficiente ou benéfico.",
+          "Que se comporta de maneira adequada ou moralmente correta."
+        ]
+      },
+      {
+        "label": "Repouso",
+        "definitions": [
+          "Ato ou efeito de descansar.",
+          "Interrupção de atividade para recuperar energias.",
+          "Estado de tranquilidade física ou mental."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Bom Sucesso",
+    "words": [
+      {
+        "label": "Bom",
+        "definitions": [
+          "Que possui qualidades positivas.",
+          "Adequado, correto ou conveniente.",
+          "Que é favorável ou vantajoso."
+        ]
+      },
+      {
+        "label": "Sucesso",
+        "definitions": [
+          "Resultado positivo de algo planejado.",
+          "Reconhecimento por êxito alcançado.",
+          "Ato de atingir um objetivo com êxito."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Campo Belo",
+    "words": [
+      {
+        "label": "Campo",
+        "definitions": [
+          "Terreno plano, aberto e geralmente coberto por vegetação.",
+          "Área rural destinada à agricultura ou pastagem.",
+          "Espaço livre, em oposição à cidade ou área urbana."
+        ]
+      },
+      {
+        "label": "Belo",
+        "definitions": [
+          "Que possui beleza; agradável aos sentidos.",
+          "Esteticamente harmonioso ou encantador.",
+          "Que causa admiração pela aparência ou forma."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Campos Gerais",
+    "words": [
+      {
+        "label": "Campos",
+        "definitions": [
+          "Terrenos extensos cobertos por vegetação rasteira.",
+          "Áreas rurais planas e férteis.",
+          "Espaços naturais abertos usados para cultivo ou criação de gado."
+        ]
+      },
+      {
+        "label": "Gerais",
+        "definitions": [
+          "Que abrangem ou dizem respeito a um todo.",
+          "Não específico; aplicável de forma ampla.",
+          "Comuns ou amplamente difundidos."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cana Verde",
+    "words": [
+      {
+        "label": "Cana",
+        "definitions": [
+          "Planta cultivada para a extração de açúcar ou álcool.",
+          "Talo longo, flexível e cilíndrico de algumas plantas.",
+          "Nome comum para a cana-de-açúcar."
+        ]
+      },
+      {
+        "label": "Verde",
+        "definitions": [
+          "Cor associada à vegetação ou natureza.",
+          "Que não amadureceu totalmente.",
+          "Relacionado à juventude, frescor ou inexperiência."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Divisa Nova",
+    "words": [
+      {
+        "label": "Divisa",
+        "definitions": [
+          "Linha ou ponto que separa dois territórios.",
+          "Limite entre propriedades ou regiões.",
+          "Fronteira física ou simbólica."
+        ]
+      },
+      {
+        "label": "Nova",
+        "definitions": [
+          "Que surgiu há pouco tempo; recente.",
+          "Que substitui algo antigo.",
+          "Que ainda não foi usada ou conhecida."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Monte Belo",
+    "words": [
+      {
+        "label": "Monte",
+        "definitions": [
+          "Elevação natural do terreno; colina ou montanha.",
+          "Grande quantidade de algo empilhado.",
+          "Lugar elevado em relação ao nível do mar."
+        ]
+      },
+      {
+        "label": "Belo",
+        "definitions": [
+          "Que possui beleza; agradável aos sentidos.",
+          "Esteticamente harmonioso ou encantador.",
+          "Que causa admiração pela aparência ou forma."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cabo Verde",
+    "words": [
+      {
+        "label": "Cabo",
+        "definitions": [
+          "Extremidade de terra que avança sobre o mar.",
+          "Posto militar de baixa patente.",
+          "Parte final ou ponta de algo."
+        ]
+      },
+      {
+        "label": "Verde",
+        "definitions": [
+          "Cor associada à vegetação ou natureza.",
+          "Que não amadureceu totalmente.",
+          "Relacionado à juventude, frescor ou inexperiência."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Poço Fundo",
+    "words": [
+      {
+        "label": "Poço",
+        "definitions": [
+          "Buraco cavado no solo para extrair água.",
+          "Cavidade profunda natural ou artificial.",
+          "Reservatório vertical para captação de líquidos."
+        ]
+      },
+      {
+        "label": "Fundo",
+        "definitions": [
+          "Parte mais baixa ou profunda de algo.",
+          "Extremidade oposta à entrada.",
+          "Interior profundo ou oculto."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Ribeirão Vermelho",
+    "words": [
+      {
+        "label": "Ribeirão",
+        "definitions": [
+          "Curso de água menor que um rio.",
+          "Corrente de água com pouco volume.",
+          "Pequeno riacho ou afluente."
+        ]
+      },
+      {
+        "label": "Vermelho",
+        "definitions": [
+          "Cor que lembra o sangue.",
+          "Que apresenta coloração intensa entre o laranja e o violeta.",
+          "Associado à paixão, calor ou intensidade."
+        ]
+      }
+    ]
+  }
+]
