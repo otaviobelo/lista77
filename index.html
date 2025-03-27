@@ -120,9 +120,7 @@
       block.className = "word-block";
 
       city.words.forEach((word, wordIndex) => {
-        const title = document.createElement("h3");
-        title.textContent = `Palavra ${wordIndex + 1}: ${word.label}`;
-        block.appendChild(title);
+        // Título removido para não exibir o nome da cidade
 
         const defText = document.createElement("p");
         defText.textContent = "Escolha uma definição:";
