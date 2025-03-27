@@ -2,28 +2,13 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Que cidade é essa??</title>
+  <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       background-color: #ece5dd;
-      display: flex;
-    }
-    .main-container {
-      display: flex;
-      width: 100%;
-    }
-    .game-container {
-      flex: 2;
-    }
-    .summary-panel {
-      flex: 1;
-      background-color: white;
-      padding: 20px;
-      border-left: 1px solid #ccc;
-      min-width: 250px;
     }
     .header {
       background-color: #075e54;
@@ -32,7 +17,6 @@
       font-size: 18px;
       display: flex;
       justify-content: space-around;
-      width: 100%;
     }
     .tab {
       cursor: pointer;
@@ -66,13 +50,6 @@
       line-height: 40px;
     }
     @media (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-      .summary-panel {
-        border-left: none;
-        border-top: 1px solid #ccc;
-      }
       .history-content {
         animation: scroll-banner 15s linear infinite;
       }
@@ -155,112 +132,280 @@
     .buttons-container {
       margin-top: 10px;
     }
-    .summary-panel-content {
-      background-color: #f1f1f1;
+    .summary {
+      background-color: white;
       border-radius: 10px;
-      padding: 15px;
+      padding: 20px;
+      margin-top: 20px;
     }
-    .summary-panel-stats {
-      margin-bottom: 15px;
-    }
-    .summary-panel-stats h3 {
+    .summary-item {
       margin-bottom: 10px;
-      color: #075e54;
-    }
-    .summary-panel-list {
-      max-height: 200px;
-      overflow-y: auto;
-    }
-    .summary-correct-item {
-      background-color: #e6f3e6;
-      color: green;
-      padding: 5px;
-      margin: 5px 0;
+      padding: 10px;
       border-radius: 5px;
     }
-    .summary-incorrect-item {
-      background-color: #f3e6e6;
-      color: red;
-      padding: 5px;
-      margin: 5px 0;
-      border-radius: 5px;
-    }
+    .summary-correct { background-color: #e6f3e6; }
+    .summary-incorrect { background-color: #f3e6e6; }
 </style>
 </head>
 <body>
-  <div class="main-container">
-    <div class="game-container">
-      <div class="header">
-        <div class="tab active" onclick="loadLevel('facil.json', this)">Fácil</div>
-        <div class="tab" onclick="loadLevel('medio.json', this)">Médio</div>
-        <div class="tab" onclick="loadLevel('dificil.json', this)">Difícil</div>
-        <div class="tab" onclick="loadLevel('avancado.json', this)">Avançado</div>
-      </div>
+  <div class="header">
+    <div class="tab active" onclick="loadLevel('facil.json', this)">Fácil</div>
+    <div class="tab" onclick="loadLevel('medio.json', this)">Médio</div>
+    <div class="tab" onclick="loadLevel('dificil.json', this)">Difícil</div>
+    <div class="tab" onclick="loadLevel('avancado.json', this)">Avançado</div>
+  </div>
 
-      <div class="history-banner">
-        <div id="history-content" class="history-content"></div>
-      </div>
+  <div class="history-banner">
+    <div id="history-content" class="history-content"></div>
+  </div>
 
-      <div class="container">
-        <h2>Que cidade é essa?</h2>
-        <div id="game-area">
-          <p><strong>BEM-VINDO AO GAME WHATSCITY</strong></p>
-        </div>
-      </div>
-    </div>
-
-    <div class="summary-panel">
-      <div class="summary-panel-content">
-        <div id="summary-panel-stats" class="summary-panel-stats">
-          <h3>Resumo do Jogo</h3>
-          <p>🏆 Pontuação Total: <span id="summary-total-score">0</span></p>
-          <p>✅ Cidades Acertadas: <span id="summary-correct-count">0</span></p>
-          <p>❌ Cidades Erradas: <span id="summary-incorrect-count">0</span>
-        </div>
-        <div class="summary-panel-lists">
-          <h3>Cidades Acertadas</h3>
-          <div id="summary-correct-list" class="summary-panel-list"></div>
-          <h3>Cidades Erradas</h3>
-          <div id="summary-incorrect-list" class="summary-panel-list"></div>
-        </div>
-      </div>
+  <div class="container">
+    <h2>Que cidade é essa?</h2>
+    <div id="game-area">
+      <p><strong>BEM-VINDO AO GAME WHATSCITY</strong></p>
     </div>
   </div>
 
   <script>
-    // [Mantenha todo o script anterior, apenas adicione estas funções]
+    const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+    const failSound = new Audio('fail.mp3');
+    const successSound = new Audio('success.mp3');
 
-    function updateSummaryPanel() {
-      // Atualiza pontuação total
-      document.getElementById('summary-total-score').textContent = totalScore;
-      
-      // Atualiza contagem de cidades
-      document.getElementById('summary-correct-count').textContent = gameResults.correct.length;
-      document.getElementById('summary-incorrect-count').textContent = gameResults.incorrect.length;
-      
-      // Atualiza lista de cidades acertadas
-      const correctList = document.getElementById('summary-correct-list');
-      correctList.innerHTML = gameResults.correct.map(city => 
-        `<div class="summary-correct-item">${city}</div>`
-      ).join('');
-      
-      // Atualiza lista de cidades erradas
-      const incorrectList = document.getElementById('summary-incorrect-list');
-      incorrectList.innerHTML = gameResults.incorrect.map(city => 
-        `<div class="summary-incorrect-item">${city}</div>`
-      ).join('');
+    function normalize(text) {
+      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     }
 
-    // Modificar as funções existentes para chamar updateSummaryPanel
+    let allCities = [];
+    let currentIndex = 0;
+    let currentCity = null;
+    let attempts = 3;
+    let currentDifficulty = 'facil';
+    let totalScore = 0;
+    let gameResults = {
+      correct: [],
+      incorrect: []
+    };
 
-    // No checkGuess(), adicionar após atualizar gameResults:
-    updateSummaryPanel();
+    function initializeHistoryBanner() {
+      const history = document.getElementById("history-content");
+      
+      // Cria um elemento de pontuação no início do banner
+      const scoreSpan = document.createElement("span");
+      scoreSpan.id = "game-score";
+      scoreSpan.className = "history-item score-display";
+      scoreSpan.innerHTML = `🏆 Pontuação: ${totalScore}`;
+      history.appendChild(scoreSpan);
 
-    // No loadLevel(), adicionar após resetar gameResults:
-    updateSummaryPanel();
+      const welcomeSpan = document.createElement("span");
+      welcomeSpan.className = "history-item";
+      welcomeSpan.innerHTML = "👋 Bem-vindo ao QUE CIDADE É ESSA?! Escolha um nível e comece a jogar.";
+      history.appendChild(welcomeSpan);
+    }
 
-    // No showGameSummary(), adicionar no final:
-    updateSummaryPanel();
+    function updateScore(isCorrect) {
+      // Incrementa pontuação em 10 para acerto, 0 para erro
+      totalScore += isCorrect ? 10 : 0;
+      
+      // Atualiza o elemento de pontuação
+      const scoreElement = document.getElementById("game-score");
+      if (scoreElement) {
+        scoreElement.innerHTML = `🏆 Pontuação: ${totalScore}`;
+      }
+    }
+
+    function updateHistoryBanner(cityName, wasCorrect) {
+      const history = document.getElementById("history-content");
+      
+      // Remove a mensagem de boas-vindas após a primeira cidade
+      const welcomeItem = history.querySelector(".history-item:not(.score-display):not(.history-correct):not(.history-incorrect)");
+      if (welcomeItem) {
+        welcomeItem.remove();
+      }
+
+      const span = document.createElement("span");
+      span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
+      span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
+      history.appendChild(span);
+
+      // Atualiza a pontuação
+      updateScore(wasCorrect);
+    }
+
+    function loadCityGame(city) {
+      currentCity = city;
+      attempts = 3;
+      const container = document.getElementById("game-area");
+      container.innerHTML = "";
+
+      const block = document.createElement("div");
+      block.className = "word-block";
+
+      city.words.forEach((word, wordIndex) => {
+        const defText = document.createElement("p");
+        defText.textContent = "Escolha uma definição:";
+        block.appendChild(defText);
+
+        if ((currentDifficulty === 'dificil' && wordIndex === 1) || (currentDifficulty === 'avancado' && wordIndex === 2)) {
+          const prepositionNote = document.createElement("p");
+          prepositionNote.textContent = currentDifficulty === 'dificil' 
+            ? "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES" 
+            : "A TERCEIRA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES";
+          prepositionNote.className = "preposition-note";
+          block.appendChild(prepositionNote);
+
+          const defPara = document.createElement("p");
+          defPara.id = `definition-${wordIndex}`;
+          defPara.className = "definition";
+          defPara.textContent = word.definitions[0] || '';
+          block.appendChild(defPara);
+        } else {
+          const definitionButtonsContainer = document.createElement("div");
+          definitionButtonsContainer.className = `definition-buttons-${wordIndex}`;
+
+          word.definitions.forEach((definition, index) => {
+            const btn = document.createElement("button");
+            btn.textContent = index + 1;
+            btn.onclick = function () {
+              if (this.classList.contains('selected')) return;
+              definitionSelectSound.play();
+              const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
+              wordButtons.forEach(b => {
+                b.classList.remove('selected');
+                b.disabled = false;
+              });
+              this.classList.add('selected');
+              this.disabled = true;
+              const defPara = document.getElementById(`definition-${wordIndex}`);
+              defPara.classList.remove("hidden");
+              const definitionText = document.createElement('div');
+              definitionText.textContent = definition;
+              definitionText.style.backgroundColor = '#075e54';
+              definitionText.style.color = 'white';
+              definitionText.style.padding = '10px';
+              definitionText.style.borderRadius = '5px';
+              definitionText.style.marginTop = '10px';
+              defPara.innerHTML = '';
+              defPara.appendChild(definitionText);
+            };
+            definitionButtonsContainer.appendChild(btn);
+          });
+
+          block.appendChild(definitionButtonsContainer);
+
+          const defPara = document.createElement("p");
+          defPara.id = `definition-${wordIndex}`;
+          defPara.className = "definition hidden";
+          block.appendChild(defPara);
+        }
+      });
+
+      container.appendChild(block);
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Digite o nome da cidade";
+      input.id = "guess";
+      container.appendChild(input);
+
+      const buttonsDiv = document.createElement("div");
+      buttonsDiv.className = "buttons-container";
+
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "Enviar";
+      submitBtn.onclick = checkGuess;
+      buttonsDiv.appendChild(submitBtn);
+
+      container.appendChild(buttonsDiv);
+
+      const msg = document.createElement("div");
+      msg.id = "message";
+      msg.className = "message";
+      container.appendChild(msg);
+    }
+
+    function checkGuess() {
+      const guessInput = document.getElementById("guess");
+      const msg = document.getElementById("message");
+      const guess = normalize(guessInput.value);
+      const correct = normalize(currentCity.name);
+
+      if (guess === correct) {
+        successSound.play();
+        msg.innerHTML = `<span class='correct'>🎉 Correto! (+10 pontos)</span>`;
+        gameResults.correct.push(currentCity.name);
+        updateHistoryBanner(currentCity.name, true);
+      } else {
+        failSound.play();
+        attempts--;
+        if (attempts === 0) {
+          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}. (+0 pontos)</span>`;
+          gameResults.incorrect.push(currentCity.name);
+          updateHistoryBanner(currentCity.name, false);
+        } else {
+          msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts} (+0 pontos)</span>`;
+        }
+      }
+      guessInput.value = "";
+
+      if (guess === correct || attempts === 0) {
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Próximo Desafio";
+        nextBtn.onclick = () => {
+          currentIndex++;
+          if (currentIndex < allCities.length) {
+            loadCityGame(allCities[currentIndex]);
+          } else {
+            showGameSummary();
+          }
+        };
+        msg.appendChild(nextBtn);
+      }
+    }
+
+    function loadLevel(file, tabElement) {
+      // Se for o primeiro carregamento, inicializa o histórico
+      if (!document.getElementById("history-content").children.length) {
+        initializeHistoryBanner();
+      }
+
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      tabElement.classList.add("active");
+      currentDifficulty = file.replace('.json', '');
+
+      fetch(file)
+        .then(res => res.json())
+        .then(data => {
+          allCities = data.sort(() => Math.random() - 0.5);
+          currentIndex = 0;
+          // Resetamos os resultados do jogo, mas não o histórico visual
+          gameResults = {
+            correct: [],
+            incorrect: []
+          };
+          loadCityGame(allCities[currentIndex]);
+        });
+    }
+
+    function showGameSummary() {
+      const container = document.getElementById("game-area");
+      container.innerHTML = `
+        <div class="summary">
+          <h2>Resumo da Fase</h2>
+          <h3>Pontuação Total: 🏆 ${totalScore} pontos</h3>
+          <h3>Cidades Acertadas (${gameResults.correct.length}):</h3>
+          ${gameResults.correct.map(city => `<div class="summary-item summary-correct">${city}</div>`).join('')}
+          <h3>Cidades Não Descobertas (${gameResults.incorrect.length}):</h3>
+          ${gameResults.incorrect.map(city => `<div class="summary-item summary-incorrect">${city}</div>`).join('')}
+          <div class="summary-stats">
+            <p>Total de Cidades: ${allCities.length}</p>
+            <p>Porcentagem de Acerto: ${((gameResults.correct.length / allCities.length) * 100).toFixed(2)}%</p>
+          </div>
+        </div>
+      `;
+    }
+
+    initializeHistoryBanner();
+    loadLevel("facil.json", document.querySelector(".tab.active"));
   </script>
 </body>
 </html>
