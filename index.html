@@ -42,6 +42,11 @@
     }
     .definition { margin: 10px 0; }
     .hidden { display: none; }
+    .preposition-note {
+      color: #666;
+      font-style: italic;
+      margin: 10px 0;
+    }
     input[type="text"] {
       padding: 10px;
       width: 90%;
@@ -95,7 +100,7 @@
   <div class="header">
     <div class="tab active" onclick="loadLevel('facil.json', this)">Fácil</div>
     <div class="tab" onclick="loadLevel('medio.json', this)">Médio</div>
-    <div class="tab">Difícil</div>
+    <div class="tab" onclick="loadLevel('dificil.json', this)">Difícil</div>
     <div class="tab">Avançado</div>
   </div>
 
@@ -113,6 +118,7 @@
     let currentIndex = 0;
     let currentCity = null;
     let attempts = 3;
+    let currentDifficulty = 'facil';
     let gameResults = {
       correct: [],
       incorrect: []
@@ -132,46 +138,62 @@
         defText.textContent = "Escolha uma definição:";
         block.appendChild(defText);
 
-        const definitionButtonsContainer = document.createElement("div");
-        definitionButtonsContainer.className = `definition-buttons-${wordIndex}`;
-
-        word.definitions.forEach((definition, index) => {
-          const btn = document.createElement("button");
-          btn.textContent = index + 1;
-          btn.dataset.wordIndex = wordIndex;
-          btn.dataset.definitionIndex = index;
+        // Lógica específica para nível Difícil
+        if (currentDifficulty === 'dificil' && wordIndex === 1) {
+          // Segunda palavra: apenas mostra nota sobre preposição
+          const prepositionNote = document.createElement("p");
+          prepositionNote.textContent = "Esta palavra é uma preposição.";
+          prepositionNote.className = "preposition-note";
+          block.appendChild(prepositionNote);
           
-          btn.onclick = function() {
-            // Se o botão já foi selecionado, não faz nada
-            if (this.classList.contains('selected')) return;
+          const defPara = document.createElement("p");
+          defPara.id = `definition-${wordIndex}`;
+          defPara.className = "definition";
+          defPara.textContent = word.definitions[0];
+          block.appendChild(defPara);
+        } else {
+          // Comportamento padrão para outros níveis e outras palavras
+          const definitionButtonsContainer = document.createElement("div");
+          definitionButtonsContainer.className = `definition-buttons-${wordIndex}`;
 
-            // Remove a seleção de outros botões da mesma palavra
-            const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
-            wordButtons.forEach(b => {
-              b.classList.remove('selected');
-              b.disabled = false;
-            });
+          word.definitions.forEach((definition, index) => {
+            const btn = document.createElement("button");
+            btn.textContent = index + 1;
+            btn.dataset.wordIndex = wordIndex;
+            btn.dataset.definitionIndex = index;
+            
+            btn.onclick = function() {
+              // Se o botão já foi selecionado, não faz nada
+              if (this.classList.contains('selected')) return;
 
-            // Seleciona o botão atual
-            this.classList.add('selected');
-            this.disabled = true;
+              // Remove a seleção de outros botões da mesma palavra
+              const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
+              wordButtons.forEach(b => {
+                b.classList.remove('selected');
+                b.disabled = false;
+              });
 
-            // Mostra a definição
-            const defId = `definition-${wordIndex}`;
-            const defPara = document.getElementById(defId);
-            defPara.textContent = definition;
-            defPara.classList.remove("hidden");
-          };
+              // Seleciona o botão atual
+              this.classList.add('selected');
+              this.disabled = true;
 
-          definitionButtonsContainer.appendChild(btn);
-        });
+              // Mostra a definição
+              const defId = `definition-${wordIndex}`;
+              const defPara = document.getElementById(defId);
+              defPara.textContent = definition;
+              defPara.classList.remove("hidden");
+            };
 
-        block.appendChild(definitionButtonsContainer);
+            definitionButtonsContainer.appendChild(btn);
+          });
 
-        const defPara = document.createElement("p");
-        defPara.id = `definition-${wordIndex}`;
-        defPara.className = "definition hidden";
-        block.appendChild(defPara);
+          block.appendChild(definitionButtonsContainer);
+
+          const defPara = document.createElement("p");
+          defPara.id = `definition-${wordIndex}`;
+          defPara.className = "definition hidden";
+          block.appendChild(defPara);
+        }
       });
 
       container.appendChild(block);
@@ -272,6 +294,10 @@
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
       tabElement.classList.add("active");
       gameResults = { correct: [], incorrect: [] };
+      
+      // Atualiza a dificuldade atual
+      currentDifficulty = file.replace('.json', '');
+      
       fetch(file)
         .then(res => res.json())
         .then(data => {
