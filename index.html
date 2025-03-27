@@ -165,7 +165,7 @@
       } else {
         attempts--;
         if (attempts === 0) {
-          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}</span>`;
+          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! Você não conseguiu adivinhar a cidade.</span>`;
         } else {
           msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
         }
