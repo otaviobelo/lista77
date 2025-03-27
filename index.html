@@ -31,15 +31,18 @@
     .history-banner {
       background-color: #f1f1f1;
       overflow: hidden;
-      white-space: nowrap;
       padding: 10px 0;
       border-top: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
       font-size: 16px;
       font-weight: bold;
+      position: relative;
     }
     .history-content {
       display: inline-block;
+      white-space: nowrap;
+      position: absolute;
+      will-change: transform;
       animation: scroll-left 25s linear infinite;
     }
     .history-item {
@@ -160,7 +163,7 @@
     const successSound = new Audio('success.mp3');
 
     function normalize(text) {
-      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     }
 
     let allCities = [];
@@ -172,6 +175,14 @@
       correct: [],
       incorrect: []
     };
+
+    function updateHistoryBanner(cityName, wasCorrect) {
+      const history = document.getElementById("history-content");
+      const span = document.createElement("span");
+      span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
+      span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
+      history.appendChild(span);
+    }
 
     function loadCityGame(city) {
       currentCity = city;
@@ -187,15 +198,14 @@
         defText.textContent = "Escolha uma definição:";
         block.appendChild(defText);
 
-        if ((currentDifficulty === 'dificil' && wordIndex === 1) || 
-            (currentDifficulty === 'avancado' && wordIndex === 2)) {
+        if ((currentDifficulty === 'dificil' && wordIndex === 1) || (currentDifficulty === 'avancado' && wordIndex === 2)) {
           const prepositionNote = document.createElement("p");
           prepositionNote.textContent = currentDifficulty === 'dificil' 
             ? "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES" 
             : "A TERCEIRA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES";
           prepositionNote.className = "preposition-note";
           block.appendChild(prepositionNote);
-          
+
           const defPara = document.createElement("p");
           defPara.id = `definition-${wordIndex}`;
           defPara.className = "definition";
@@ -208,26 +218,18 @@
           word.definitions.forEach((definition, index) => {
             const btn = document.createElement("button");
             btn.textContent = index + 1;
-            btn.dataset.wordIndex = wordIndex;
-            btn.dataset.definitionIndex = index;
-
-            btn.onclick = function() {
+            btn.onclick = function () {
               if (this.classList.contains('selected')) return;
               definitionSelectSound.play();
-
               const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
               wordButtons.forEach(b => {
                 b.classList.remove('selected');
                 b.disabled = false;
               });
-
               this.classList.add('selected');
               this.disabled = true;
-
-              const defId = `definition-${wordIndex}`;
-              const defPara = document.getElementById(defId);
+              const defPara = document.getElementById(`definition-${wordIndex}`);
               defPara.classList.remove("hidden");
-
               const definitionText = document.createElement('div');
               definitionText.textContent = definition;
               definitionText.style.backgroundColor = '#075e54';
@@ -235,11 +237,9 @@
               definitionText.style.padding = '10px';
               definitionText.style.borderRadius = '5px';
               definitionText.style.marginTop = '10px';
-
               defPara.innerHTML = '';
               defPara.appendChild(definitionText);
             };
-
             definitionButtonsContainer.appendChild(btn);
           });
 
@@ -287,7 +287,20 @@
         msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
         gameResults.correct.push(currentCity.name);
         updateHistoryBanner(currentCity.name, true);
+      } else {
+        failSound.play();
+        attempts--;
+        if (attempts === 0) {
+          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
+          gameResults.incorrect.push(currentCity.name);
+          updateHistoryBanner(currentCity.name, false);
+        } else {
+          msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
+        }
+      }
+      guessInput.value = "";
 
+      if (guess === correct || attempts === 0) {
         const nextBtn = document.createElement("button");
         nextBtn.textContent = "Próximo Desafio";
         nextBtn.onclick = () => {
@@ -299,30 +312,7 @@
           }
         };
         msg.appendChild(nextBtn);
-      } else {
-        failSound.play();
-        attempts--;
-        if (attempts === 0) {
-          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
-          gameResults.incorrect.push(currentCity.name);
-          updateHistoryBanner(currentCity.name, false);
-
-          const nextBtn = document.createElement("button");
-          nextBtn.textContent = "Próximo Desafio";
-          nextBtn.onclick = () => {
-            currentIndex++;
-            if (currentIndex < allCities.length) {
-              loadCityGame(allCities[currentIndex]);
-            } else {
-              showGameSummary();
-            }
-          };
-          msg.appendChild(nextBtn);
-        } else {
-          msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
-        }
       }
-      guessInput.value = "";
     }
 
     function showGameSummary() {
@@ -342,19 +332,9 @@
       `;
     }
 
-    function updateHistoryBanner(cityName, wasCorrect) {
-      const history = document.getElementById("history-content");
-      const span = document.createElement("span");
-      span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
-      span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
-      history.appendChild(span);
-    }
-
     function loadLevel(file, tabElement) {
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
       tabElement.classList.add("active");
-      gameResults = { correct: [], incorrect: [] };
-      document.getElementById("history-content").innerHTML = "";
       currentDifficulty = file.replace('.json', '');
 
       fetch(file)
