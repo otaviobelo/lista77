@@ -84,6 +84,8 @@
       return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
     }
 
+    let allCities = [];
+    let currentIndex = 0;
     let currentCity = null;
     let attempts = 3;
 
@@ -150,7 +152,16 @@
       const correct = normalize(currentCity.name);
 
       if (guess === correct) {
-        msg.innerHTML = `<span class='correct'>🎉 Correto! A cidade é ${currentCity.name}</span>`;
+        msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
+        setTimeout(() => {
+          currentIndex++;
+          if (currentIndex < allCities.length) {
+            loadCityGame(allCities[currentIndex]);
+          } else {
+            msg.innerHTML = `<span class='correct'>🎉 Fim do jogo! Você completou todas as cidades!</span>`;
+            document.getElementById("game-area").innerHTML = "";
+          }
+        }, 1000);
       } else {
         attempts--;
         if (attempts === 0) {
@@ -165,8 +176,9 @@
     fetch("facil.json")
       .then(res => res.json())
       .then(data => {
-        const random = data[Math.floor(Math.random() * data.length)];
-        loadCityGame(random);
+        allCities = data.sort(() => Math.random() - 0.5);
+        currentIndex = 0;
+        loadCityGame(allCities[currentIndex]);
       });
   </script>
 </body>
