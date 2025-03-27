@@ -28,6 +28,38 @@
       background-color: #128c7e;
       font-weight: bold;
     }
+    .history-banner {
+      background-color: #f1f1f1;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .history-content {
+      display: inline-block;
+      animation: scroll-left 25s linear infinite;
+    }
+    .history-item {
+      margin: 0 30px;
+      display: inline-block;
+    }
+    .history-correct {
+      color: green;
+    }
+    .history-incorrect {
+      color: red;
+    }
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
     .container {
       padding: 20px;
       max-width: 750px;
@@ -111,16 +143,19 @@
     <div class="tab" onclick="loadLevel('avancado.json', this)">Avançado</div>
   </div>
 
+  <div class="history-banner">
+    <div id="history-content" class="history-content"></div>
+  </div>
+
   <div class="container">
     <h2>Que cidade é essa?</h2>
-    <div id="game-area"></div>
+    <div id="game-area">
+      <p><strong>BEM-VINDO AO GAME WHATSCITY</strong></p>
+    </div>
   </div>
 
   <script>
-    // Som de seleção de definição
     const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
-
-    // Sons de sucesso e falha
     const failSound = new Audio('fail.mp3');
     const successSound = new Audio('success.mp3');
 
@@ -152,10 +187,8 @@
         defText.textContent = "Escolha uma definição:";
         block.appendChild(defText);
 
-        // Lógica específica para níveis Difícil e Avançado
         if ((currentDifficulty === 'dificil' && wordIndex === 1) || 
             (currentDifficulty === 'avancado' && wordIndex === 2)) {
-          // Segunda palavra no Difícil ou terceira palavra no Avançado
           const prepositionNote = document.createElement("p");
           prepositionNote.textContent = currentDifficulty === 'dificil' 
             ? "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES" 
@@ -169,7 +202,6 @@
           defPara.textContent = word.definitions[0] || '';
           block.appendChild(defPara);
         } else {
-          // Comportamento padrão para outros níveis e outras palavras
           const definitionButtonsContainer = document.createElement("div");
           definitionButtonsContainer.className = `definition-buttons-${wordIndex}`;
 
@@ -178,40 +210,32 @@
             btn.textContent = index + 1;
             btn.dataset.wordIndex = wordIndex;
             btn.dataset.definitionIndex = index;
-            
-            btn.onclick = function() {
-              // Se o botão já foi selecionado, não faz nada
-              if (this.classList.contains('selected')) return;
 
-              // Toca o som de seleção
+            btn.onclick = function() {
+              if (this.classList.contains('selected')) return;
               definitionSelectSound.play();
 
-              // Remove a seleção de outros botões da mesma palavra
               const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
               wordButtons.forEach(b => {
                 b.classList.remove('selected');
                 b.disabled = false;
               });
 
-              // Seleciona o botão atual
               this.classList.add('selected');
               this.disabled = true;
 
-              // Mostra a definição com fundo verde
               const defId = `definition-${wordIndex}`;
               const defPara = document.getElementById(defId);
               defPara.classList.remove("hidden");
-              
-              // Cria uma div para o texto da definição
+
               const definitionText = document.createElement('div');
               definitionText.textContent = definition;
-              definitionText.style.backgroundColor = '#075e54';  // Verde similar ao da imagem
+              definitionText.style.backgroundColor = '#075e54';
               definitionText.style.color = 'white';
               definitionText.style.padding = '10px';
               definitionText.style.borderRadius = '5px';
               definitionText.style.marginTop = '10px';
-              
-              // Limpa o parágrafo anterior e adiciona a nova div
+
               defPara.innerHTML = '';
               defPara.appendChild(definitionText);
             };
@@ -259,11 +283,10 @@
       const correct = normalize(currentCity.name);
 
       if (guess === correct) {
-        // Toca o som de sucesso
         successSound.play();
-
         msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
         gameResults.correct.push(currentCity.name);
+        updateHistoryBanner(currentCity.name, true);
 
         const nextBtn = document.createElement("button");
         nextBtn.textContent = "Próximo Desafio";
@@ -275,16 +298,14 @@
             showGameSummary();
           }
         };
-
         msg.appendChild(nextBtn);
       } else {
-        // Toca o som de falha
         failSound.play();
-
         attempts--;
         if (attempts === 0) {
           msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
           gameResults.incorrect.push(currentCity.name);
+          updateHistoryBanner(currentCity.name, false);
 
           const nextBtn = document.createElement("button");
           nextBtn.textContent = "Próximo Desafio";
@@ -296,10 +317,8 @@
               showGameSummary();
             }
           };
-
           msg.appendChild(nextBtn);
         } else {
-          // Toca o som de falha a cada tentativa errada
           msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
         }
       }
@@ -312,15 +331,9 @@
         <div class="summary">
           <h2>Resumo da Fase</h2>
           <h3>Cidades Acertadas (${gameResults.correct.length}):</h3>
-          ${gameResults.correct.map(city => `
-            <div class="summary-item summary-correct">${city}</div>
-          `).join('')}
-
+          ${gameResults.correct.map(city => `<div class="summary-item summary-correct">${city}</div>`).join('')}
           <h3>Cidades Não Descobertas (${gameResults.incorrect.length}):</h3>
-          ${gameResults.incorrect.map(city => `
-            <div class="summary-item summary-incorrect">${city}</div>
-          `).join('')}
-
+          ${gameResults.incorrect.map(city => `<div class="summary-item summary-incorrect">${city}</div>`).join('')}
           <div class="summary-stats">
             <p>Total de Cidades: ${allCities.length}</p>
             <p>Porcentagem de Acerto: ${((gameResults.correct.length / allCities.length) * 100).toFixed(2)}%</p>
@@ -329,14 +342,21 @@
       `;
     }
 
+    function updateHistoryBanner(cityName, wasCorrect) {
+      const history = document.getElementById("history-content");
+      const span = document.createElement("span");
+      span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
+      span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
+      history.appendChild(span);
+    }
+
     function loadLevel(file, tabElement) {
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
       tabElement.classList.add("active");
       gameResults = { correct: [], incorrect: [] };
-      
-      // Atualiza a dificuldade atual
+      document.getElementById("history-content").innerHTML = "";
       currentDifficulty = file.replace('.json', '');
-      
+
       fetch(file)
         .then(res => res.json())
         .then(data => {
@@ -346,7 +366,6 @@
         });
     }
 
-    // Carrega inicialmente o nível fácil
     loadLevel("facil.json", document.querySelector(".tab.active"));
   </script>
 </body>
