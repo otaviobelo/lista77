@@ -350,23 +350,32 @@
     }
 
     function loadLevel(file, tabElement) {
-      const history = document.getElementById("history-content");
-      history.innerHTML = "";
-      
-      initializeHistoryBanner();
+  // Removemos a limpeza do histórico
+  // const history = document.getElementById("history-content");
+  // history.innerHTML = "";
+  
+  // Se for o primeiro carregamento, inicializa o histórico
+  if (!document.getElementById("history-content").children.length) {
+    initializeHistoryBanner();
+  }
 
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      tabElement.classList.add("active");
-      currentDifficulty = file.replace('.json', '');
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+  tabElement.classList.add("active");
+  currentDifficulty = file.replace('.json', '');
 
-      fetch(file)
-        .then(res => res.json())
-        .then(data => {
-          allCities = data.sort(() => Math.random() - 0.5);
-          currentIndex = 0;
-          loadCityGame(allCities[currentIndex]);
-        });
-    }
+  fetch(file)
+    .then(res => res.json())
+    .then(data => {
+      allCities = data.sort(() => Math.random() - 0.5);
+      currentIndex = 0;
+      // Resetamos os resultados do jogo, mas não o histórico visual
+      gameResults = {
+        correct: [],
+        incorrect: []
+      };
+      loadCityGame(allCities[currentIndex]);
+    });
+}
 
     initializeHistoryBanner();
     loadLevel("facil.json", document.querySelector(".tab.active"));
