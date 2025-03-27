@@ -1,0 +1,132 @@
+[
+  {
+    "name": "Alagoa",
+    "words": [
+      {
+        "label": "Alagoa",
+        "definitions": [
+          "Terreno baixo onde se acumula água das chuvas.",
+          "Pequena lagoa formada naturalmente.",
+          "Região alagada ou pantanosa."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Areado",
+    "words": [
+      {
+        "label": "Areado",
+        "definitions": [
+          "Coberto ou misturado com areia.",
+          "Local com superfície arenosa.",
+          "Que contém ou recebeu areia."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Caldas",
+    "words": [
+      {
+        "label": "Caldas",
+        "definitions": [
+          "Águas quentes de origem termal usadas com fins medicinais.",
+          "Estâncias com fontes de águas minerais.",
+          "Locais com nascentes termais ou terapêuticas."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Campanha",
+    "words": [
+      {
+        "label": "Campanha",
+        "definitions": [
+          "Série de ações organizadas com um objetivo específico, como promover algo.",
+          "Operação militar realizada em determinado território.",
+          "Conjunto de esforços para alcançar uma meta, como campanha publicitária."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Campestre",
+    "words": [
+      {
+        "label": "Campestre",
+        "definitions": [
+          "Relativo ao campo ou à vida no campo.",
+          "Próprio das áreas rurais ou não urbanizadas.",
+          "Característico de regiões agrícolas ou naturais."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Carrancas",
+    "words": [
+      {
+        "label": "Carrancas",
+        "definitions": [
+          "Esculturas com feições ameaçadoras usadas na proa de embarcações.",
+          "Expressões faciais fechadas ou zangadas.",
+          "Rostos ou figuras usadas como amuleto para afastar maus espíritos."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Carvalhos",
+    "words": [
+      {
+        "label": "Carvalhos",
+        "definitions": [
+          "Árvores de grande porte, comuns em regiões de clima temperado.",
+          "Plantas lenhosas cujo fruto é a bolota.",
+          "Espécies vegetais do gênero Quercus, usadas em marcenaria e construção naval."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Consolação",
+    "words": [
+      {
+        "label": "Consolação",
+        "definitions": [
+          "Ato ou efeito de consolar alguém em sofrimento.",
+          "Alívio dado à dor moral ou tristeza.",
+          "Palavras ou gestos que confortam."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Coqueiral",
+    "words": [
+      {
+        "label": "Coqueiral",
+        "definitions": [
+          "Local onde há muitos coqueiros.",
+          "Plantação de coqueiros.",
+          "Área cultivada ou natural com coqueiros."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cristais",
+    "words": [
+      {
+        "label": "Cristais",
+        "definitions": [
+          "Substâncias sólidas com estrutura geométrica regular.",
+          "Peças de vidro fino e transparente, usadas em joias ou utensílios.",
+          "Formações naturais em rochas ou minerais com brilho e transparência."
+        ]
+      }
+    ]
+  }
+]
