@@ -5,42 +5,134 @@
   <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    /* ... (mantenha todos os estilos existentes) ... */
-
-    /* Novo estilo para o banner de resultados */
-    .results-banner {
-      background-color: #0d796f;
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ece5dd;
+    }
+    .header {
+      background-color: #075e54;
       color: white;
-      padding: 10px 0;
-      overflow: hidden;
-      white-space: nowrap;
-      position: relative;
+      padding: 15px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-around;
     }
-    
-    .results-marquee {
-      display: inline-block;
-      padding-left: 100%;
-      animation: marquee 15s linear infinite;
+    .tab {
+      cursor: pointer;
+      padding: 10px;
+      flex: 1;
+      text-align: center;
     }
-    
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-100%); }
-    }
-    
-    .result-item {
-      display: inline-block;
-      margin-right: 30px;
+    .tab.active {
+      background-color: #128c7e;
       font-weight: bold;
     }
-    
-    .result-correct {
-      color: #4caf50;
+    .history-banner {
+      background-color: #f1f1f1;
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      font-size: 16px;
+      font-weight: bold;
     }
-    
-    .result-incorrect {
-      color: #f44336;
+    .history-content {
+      display: inline-block;
+      animation: scroll-left 25s linear infinite;
     }
+    .history-item {
+      margin: 0 30px;
+      display: inline-block;
+    }
+    .history-correct {
+      color: green;
+    }
+    .history-incorrect {
+      color: red;
+    }
+    @keyframes scroll-left {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+    .container {
+      padding: 20px;
+      max-width: 750px;
+      margin: auto;
+    }
+    .word-block {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .definition { 
+      margin: 10px 0; 
+      transition: background-color 0.3s ease;
+    }
+    .hidden { display: none; }
+    .preposition-note {
+      color: white;
+      font-weight: bold;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #075e54;
+      border-radius: 5px;
+      text-align: center;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #075e54;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button.selected {
+      background-color: #128c7e;
+      color: white;
+    }
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .message {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+    .buttons-container {
+      margin-top: 10px;
+    }
+    .summary {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .summary-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .summary-correct { background-color: #e6f3e6; }
+    .summary-incorrect { background-color: #f3e6e6; }
   </style>
 </head>
 <body>
@@ -51,34 +143,139 @@
     <div class="tab" onclick="loadLevel('avancado.json', this)">Avançado</div>
   </div>
 
-  <!-- Novo banner de resultados -->
-  <div class="results-banner">
-    <div class="results-marquee" id="results-history"></div>
+  <div class="history-banner">
+    <div id="history-content" class="history-content"></div>
   </div>
 
   <div class="container">
     <h2>Que cidade é essa?</h2>
-    <div id="game-area"></div>
+    <div id="game-area">
+      <p><strong>BEM-VINDO AO GAME WHATSCITY</strong></p>
+    </div>
   </div>
 
   <script>
-    // ... (mantenha todas as variáveis existentes) ...
-    
-    let resultsHistory = [];
+    const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+    const failSound = new Audio('fail.mp3');
+    const successSound = new Audio('success.mp3');
 
-    // Função para atualizar o banner de resultados
-    function updateResultsBanner(result, cityName) {
-      resultsHistory.push({ result, cityName });
-      
-      const bannerContent = resultsHistory.map(item => {
-        const className = item.result === 'correct' ? 'result-correct' : 'result-incorrect';
-        return `<span class="result-item ${className}">${item.cityName}</span>`;
-      }).join('');
-      
-      document.getElementById('results-history').innerHTML = bannerContent;
+    function normalize(text) {
+      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
     }
 
-    // Modifique a função checkGuess para atualizar o banner
+    let allCities = [];
+    let currentIndex = 0;
+    let currentCity = null;
+    let attempts = 3;
+    let currentDifficulty = 'facil';
+    let gameResults = {
+      correct: [],
+      incorrect: []
+    };
+
+    function loadCityGame(city) {
+      currentCity = city;
+      attempts = 3;
+      const container = document.getElementById("game-area");
+      container.innerHTML = "";
+
+      const block = document.createElement("div");
+      block.className = "word-block";
+
+      city.words.forEach((word, wordIndex) => {
+        const defText = document.createElement("p");
+        defText.textContent = "Escolha uma definição:";
+        block.appendChild(defText);
+
+        if ((currentDifficulty === 'dificil' && wordIndex === 1) || 
+            (currentDifficulty === 'avancado' && wordIndex === 2)) {
+          const prepositionNote = document.createElement("p");
+          prepositionNote.textContent = currentDifficulty === 'dificil' 
+            ? "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES" 
+            : "A TERCEIRA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES";
+          prepositionNote.className = "preposition-note";
+          block.appendChild(prepositionNote);
+          
+          const defPara = document.createElement("p");
+          defPara.id = `definition-${wordIndex}`;
+          defPara.className = "definition";
+          defPara.textContent = word.definitions[0] || '';
+          block.appendChild(defPara);
+        } else {
+          const definitionButtonsContainer = document.createElement("div");
+          definitionButtonsContainer.className = `definition-buttons-${wordIndex}`;
+
+          word.definitions.forEach((definition, index) => {
+            const btn = document.createElement("button");
+            btn.textContent = index + 1;
+            btn.dataset.wordIndex = wordIndex;
+            btn.dataset.definitionIndex = index;
+
+            btn.onclick = function() {
+              if (this.classList.contains('selected')) return;
+              definitionSelectSound.play();
+
+              const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
+              wordButtons.forEach(b => {
+                b.classList.remove('selected');
+                b.disabled = false;
+              });
+
+              this.classList.add('selected');
+              this.disabled = true;
+
+              const defId = `definition-${wordIndex}`;
+              const defPara = document.getElementById(defId);
+              defPara.classList.remove("hidden");
+
+              const definitionText = document.createElement('div');
+              definitionText.textContent = definition;
+              definitionText.style.backgroundColor = '#075e54';
+              definitionText.style.color = 'white';
+              definitionText.style.padding = '10px';
+              definitionText.style.borderRadius = '5px';
+              definitionText.style.marginTop = '10px';
+
+              defPara.innerHTML = '';
+              defPara.appendChild(definitionText);
+            };
+
+            definitionButtonsContainer.appendChild(btn);
+          });
+
+          block.appendChild(definitionButtonsContainer);
+
+          const defPara = document.createElement("p");
+          defPara.id = `definition-${wordIndex}`;
+          defPara.className = "definition hidden";
+          block.appendChild(defPara);
+        }
+      });
+
+      container.appendChild(block);
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Digite o nome da cidade";
+      input.id = "guess";
+      container.appendChild(input);
+
+      const buttonsDiv = document.createElement("div");
+      buttonsDiv.className = "buttons-container";
+
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "Enviar";
+      submitBtn.onclick = checkGuess;
+      buttonsDiv.appendChild(submitBtn);
+
+      container.appendChild(buttonsDiv);
+
+      const msg = document.createElement("div");
+      msg.id = "message";
+      msg.className = "message";
+      container.appendChild(msg);
+    }
+
     function checkGuess() {
       const guessInput = document.getElementById("guess");
       const msg = document.getElementById("message");
@@ -89,7 +286,7 @@
         successSound.play();
         msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
         gameResults.correct.push(currentCity.name);
-        updateResultsBanner('correct', currentCity.name); // Adiciona ao banner
+        updateHistoryBanner(currentCity.name, true);
 
         const nextBtn = document.createElement("button");
         nextBtn.textContent = "Próximo Desafio";
@@ -105,11 +302,10 @@
       } else {
         failSound.play();
         attempts--;
-        
         if (attempts === 0) {
           msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
           gameResults.incorrect.push(currentCity.name);
-          updateResultsBanner('incorrect', guessInput.value.trim() || "Sem palpite"); // Adiciona ao banner
+          updateHistoryBanner(currentCity.name, false);
 
           const nextBtn = document.createElement("button");
           nextBtn.textContent = "Próximo Desafio";
@@ -129,7 +325,48 @@
       guessInput.value = "";
     }
 
-    // ... (mantenha o restante do código existente) ...
+    function showGameSummary() {
+      const container = document.getElementById("game-area");
+      container.innerHTML = `
+        <div class="summary">
+          <h2>Resumo da Fase</h2>
+          <h3>Cidades Acertadas (${gameResults.correct.length}):</h3>
+          ${gameResults.correct.map(city => `<div class="summary-item summary-correct">${city}</div>`).join('')}
+          <h3>Cidades Não Descobertas (${gameResults.incorrect.length}):</h3>
+          ${gameResults.incorrect.map(city => `<div class="summary-item summary-incorrect">${city}</div>`).join('')}
+          <div class="summary-stats">
+            <p>Total de Cidades: ${allCities.length}</p>
+            <p>Porcentagem de Acerto: ${((gameResults.correct.length / allCities.length) * 100).toFixed(2)}%</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateHistoryBanner(cityName, wasCorrect) {
+      const history = document.getElementById("history-content");
+      const span = document.createElement("span");
+      span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
+      span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
+      history.appendChild(span);
+    }
+
+    function loadLevel(file, tabElement) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      tabElement.classList.add("active");
+      gameResults = { correct: [], incorrect: [] };
+      document.getElementById("history-content").innerHTML = "";
+      currentDifficulty = file.replace('.json', '');
+
+      fetch(file)
+        .then(res => res.json())
+        .then(data => {
+          allCities = data.sort(() => Math.random() - 0.5);
+          currentIndex = 0;
+          loadCityGame(allCities[currentIndex]);
+        });
+    }
+
+    loadLevel("facil.json", document.querySelector(".tab.active"));
   </script>
 </body>
 </html>
