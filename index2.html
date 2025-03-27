@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -120,6 +119,10 @@
   <script>
     // Som de seleção de definição
     const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+
+    // Sons de sucesso e falha
+    const failSound = new Audio('fail.mp3');
+    const successSound = new Audio('success.mp3');
 
     function normalize(text) {
       return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
@@ -256,6 +259,9 @@
       const correct = normalize(currentCity.name);
 
       if (guess === correct) {
+        // Toca o som de sucesso
+        successSound.play();
+
         msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
         gameResults.correct.push(currentCity.name);
 
@@ -272,6 +278,9 @@
 
         msg.appendChild(nextBtn);
       } else {
+        // Toca o som de falha
+        failSound.play();
+
         attempts--;
         if (attempts === 0) {
           msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
@@ -290,6 +299,7 @@
 
           msg.appendChild(nextBtn);
         } else {
+          // Toca o som de falha a cada tentativa errada
           msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
         }
       }
