@@ -1,0 +1,152 @@
+[
+  {
+    "name": "Bandeira do Sul",
+    "words": [
+      {
+        "label": "Bandeira",
+        "definitions": [
+          "Pedaço de tecido com cores e símbolos representativos de um país, estado ou entidade.",
+          "Símbolo usado para representar ideologias, movimentos ou nações.",
+          "Peça usada em festas ou eventos como decoração."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Sul",
+        "definitions": [
+          "Um dos quatro pontos cardeais, oposto ao norte.",
+          "Região localizada ao sul de determinado lugar.",
+          "Direção apontada pela parte inferior de um mapa convencional."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Cachoeira de Minas",
+    "words": [
+      {
+        "label": "Cachoeira",
+        "definitions": [
+          "Queda natural de água por um desnível do terreno.",
+          "Curso de água que despenca de um ponto mais alto.",
+          "Formação natural onde um rio ou córrego se precipita verticalmente."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Minas",
+        "definitions": [
+          "Formações subterrâneas ou escavadas para extração de minerais.",
+          "Nome comum para designar o estado de Minas Gerais.",
+          "Locais onde há exploração de recursos minerais."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Campo do Meio",
+    "words": [
+      {
+        "label": "Campo",
+        "definitions": [
+          "Terreno plano e aberto, coberto por vegetação rasteira.",
+          "Área rural usada para agricultura ou pasto.",
+          "Espaço aberto em oposição à cidade."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Meio",
+        "definitions": [
+          "Ponto intermediário entre dois extremos.",
+          "Circunstância ou ambiente em que algo ocorre.",
+          "Elemento que liga ou facilita a realização de algo."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Fortaleza de Minas",
+    "words": [
+      {
+        "label": "Fortaleza",
+        "definitions": [
+          "Construção fortificada para defesa de um território.",
+          "Lugar seguro e resistente a ataques.",
+          "Figura simbólica de proteção ou resistência."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Minas",
+        "definitions": [
+          "Formações subterrâneas ou escavadas para extração de minerais.",
+          "Nome comum para designar o estado de Minas Gerais.",
+          "Locais onde há exploração de recursos minerais."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Poços de Caldas",
+    "words": [
+      {
+        "label": "Poços",
+        "definitions": [
+          "Buracos escavados no solo para captação de água.",
+          "Cavidades subterrâneas naturais ou artificiais.",
+          "Reservatórios de líquidos ou substâncias."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Caldas",
+        "definitions": [
+          "Águas termais ou minerais com propriedades terapêuticas.",
+          "Locais com fontes de águas quentes.",
+          "Banhos medicinais com águas quentes ou minerais."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Soledade de Minas",
+    "words": [
+      {
+        "label": "Soledade",
+        "definitions": [
+          "Estado de estar só ou isolado.",
+          "Solidão profunda ou afastamento social.",
+          "Sentimento de ausência de companhia."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Minas",
+        "definitions": [
+          "Formações subterrâneas ou escavadas para extração de minerais.",
+          "Nome comum para designar o estado de Minas Gerais.",
+          "Locais onde há exploração de recursos minerais."
+        ]
+      }
+    ]
+  }
+]
