@@ -37,16 +37,22 @@
       font-size: 16px;
       font-weight: bold;
       position: relative;
+      height: 40px;
+      line-height: 40px;
     }
     .history-content {
       display: inline-block;
       white-space: nowrap;
       position: absolute;
       will-change: transform;
-      animation: scroll-left 25s linear infinite
+      animation: scroll-left 25s linear infinite;
       height: 100%;
-line-height: 1.5em;
-;
+      line-height: 40px;
+    }
+    @media (max-width: 768px) {
+      .history-content {
+        animation: scroll-left 15s linear infinite;
+      }
     }
     .history-item {
       margin: 0 30px;
@@ -178,6 +184,14 @@ line-height: 1.5em;
       correct: [],
       incorrect: []
     };
+
+    function initializeHistoryBanner() {
+      const history = document.getElementById("history-content");
+      const welcomeSpan = document.createElement("span");
+      welcomeSpan.className = "history-item";
+      welcomeSpan.innerHTML = "👋 Bem-vindo ao WhatsCity! Escolha um nível e comece a jogar.";
+      history.appendChild(welcomeSpan);
+    }
 
     function updateHistoryBanner(cityName, wasCorrect) {
       const history = document.getElementById("history-content");
@@ -336,6 +350,11 @@ line-height: 1.5em;
     }
 
     function loadLevel(file, tabElement) {
+      const history = document.getElementById("history-content");
+      history.innerHTML = "";
+      
+      initializeHistoryBanner();
+
       document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
       tabElement.classList.add("active");
       currentDifficulty = file.replace('.json', '');
@@ -349,6 +368,7 @@ line-height: 1.5em;
         });
     }
 
+    initializeHistoryBanner();
     loadLevel("facil.json", document.querySelector(".tab.active"));
   </script>
 </body>
