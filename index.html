@@ -89,20 +89,13 @@
     }
     .summary-correct { background-color: #e6f3e6; }
     .summary-incorrect { background-color: #f3e6e6; }
-    .preposition-info {
-      background-color: #f0f0f0;
-      padding: 10px;
-      border-radius: 5px;
-      text-align: center;
-      margin: 10px 0;
-    }
   </style>
 </head>
 <body>
   <div class="header">
     <div class="tab active" onclick="loadLevel('facil.json', this)">Fácil</div>
     <div class="tab" onclick="loadLevel('medio.json', this)">Médio</div>
-    <div class="tab" onclick="loadLevel('dificil.json', this)">Difícil</div>
+    <div class="tab">Difícil</div>
     <div class="tab">Avançado</div>
   </div>
 
@@ -134,59 +127,49 @@
       const block = document.createElement("div");
       block.className = "word-block";
 
-      // Ajuste para nível difícil: apenas processará palavras 0 e 2
-      const relevantWords = [city.words[0], city.words[2]];
-      const processedWords = [0, 2];
-
-      processedWords.forEach((wordIndex, index) => {
-        const word = city.words[wordIndex];
-        
+      city.words.forEach((word, wordIndex) => {
         const defText = document.createElement("p");
-        defText.textContent = `Escolha uma definição para "${word.label}":`;
+        defText.textContent = "Escolha uma definição:";
         block.appendChild(defText);
 
-        if (word.label === "(preposição)") {
-          // Tratamento especial para preposição
-          const prepositionInfo = document.createElement("div");
-          prepositionInfo.className = "preposition-info";
-          prepositionInfo.textContent = "Preposição";
-          block.appendChild(prepositionInfo);
-        } else {
-          const definitionButtonsContainer = document.createElement("div");
-          definitionButtonsContainer.className = `definition-buttons-${index}`;
+        const definitionButtonsContainer = document.createElement("div");
+        definitionButtonsContainer.className = `definition-buttons-${wordIndex}`;
 
-          word.definitions.forEach((definition, defIndex) => {
-            const btn = document.createElement("button");
-            btn.textContent = defIndex + 1;
-            btn.dataset.wordIndex = index;
-            btn.dataset.definitionIndex = defIndex;
-            
-            btn.onclick = function() {
-              if (this.classList.contains('selected')) return;
+        word.definitions.forEach((definition, index) => {
+          const btn = document.createElement("button");
+          btn.textContent = index + 1;
+          btn.dataset.wordIndex = wordIndex;
+          btn.dataset.definitionIndex = index;
+          
+          btn.onclick = function() {
+            // Se o botão já foi selecionado, não faz nada
+            if (this.classList.contains('selected')) return;
 
-              const wordButtons = document.querySelectorAll(`.definition-buttons-${index} button`);
-              wordButtons.forEach(b => {
-                b.classList.remove('selected');
-                b.disabled = false;
-              });
+            // Remove a seleção de outros botões da mesma palavra
+            const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
+            wordButtons.forEach(b => {
+              b.classList.remove('selected');
+              b.disabled = false;
+            });
 
-              this.classList.add('selected');
-              this.disabled = true;
+            // Seleciona o botão atual
+            this.classList.add('selected');
+            this.disabled = true;
 
-              const defId = `definition-${index}`;
-              const defPara = document.getElementById(defId);
-              defPara.textContent = definition;
-              defPara.classList.remove("hidden");
-            };
+            // Mostra a definição
+            const defId = `definition-${wordIndex}`;
+            const defPara = document.getElementById(defId);
+            defPara.textContent = definition;
+            defPara.classList.remove("hidden");
+          };
 
-            definitionButtonsContainer.appendChild(btn);
-          });
+          definitionButtonsContainer.appendChild(btn);
+        });
 
-          block.appendChild(definitionButtonsContainer);
-        }
+        block.appendChild(definitionButtonsContainer);
 
         const defPara = document.createElement("p");
-        defPara.id = `definition-${index}`;
+        defPara.id = `definition-${wordIndex}`;
         defPara.className = "definition hidden";
         block.appendChild(defPara);
       });
