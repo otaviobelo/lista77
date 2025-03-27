@@ -40,7 +40,10 @@
       margin-bottom: 15px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .definition { margin: 10px 0; }
+    .definition { 
+      margin: 10px 0; 
+      transition: background-color 0.3s ease;
+    }
     .hidden { display: none; }
     .preposition-note {
       color: white;
@@ -114,6 +117,9 @@
   </div>
 
   <script>
+    // Som de seleção de definição
+    const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+
     function normalize(text) {
       return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
     }
@@ -173,6 +179,9 @@
               // Se o botão já foi selecionado, não faz nada
               if (this.classList.contains('selected')) return;
 
+              // Toca o som de seleção
+              definitionSelectSound.play();
+
               // Remove a seleção de outros botões da mesma palavra
               const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
               wordButtons.forEach(b => {
@@ -184,11 +193,23 @@
               this.classList.add('selected');
               this.disabled = true;
 
-              // Mostra a definição
+              // Mostra a definição com fundo verde
               const defId = `definition-${wordIndex}`;
               const defPara = document.getElementById(defId);
-              defPara.textContent = definition;
               defPara.classList.remove("hidden");
+              
+              // Cria uma div para o texto da definição
+              const definitionText = document.createElement('div');
+              definitionText.textContent = definition;
+              definitionText.style.backgroundColor = '#2A9D8F';  // Verde similar ao da imagem
+              definitionText.style.color = 'white';
+              definitionText.style.padding = '10px';
+              definitionText.style.borderRadius = '5px';
+              definitionText.style.marginTop = '10px';
+              
+              // Limpa o parágrafo anterior e adiciona a nova div
+              defPara.innerHTML = '';
+              defPara.appendChild(definitionText);
             };
 
             definitionButtonsContainer.appendChild(btn);
