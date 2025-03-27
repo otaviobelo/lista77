@@ -54,6 +54,10 @@
       margin: 5px;
       font-size: 16px;
       cursor: pointer;
+      background-color: #075e54;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
     .message {
       font-weight: bold;
@@ -64,6 +68,19 @@
     .buttons-container {
       margin-top: 10px;
     }
+    .summary {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+    .summary-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .summary-correct { background-color: #e6f3e6; }
+    .summary-incorrect { background-color: #f3e6e6; }
   </style>
 </head>
 <body>
@@ -88,6 +105,10 @@
     let currentIndex = 0;
     let currentCity = null;
     let attempts = 3;
+    let gameResults = {
+      correct: [],
+      incorrect: []
+    };
 
     function loadCityGame(city) {
       currentCity = city;
@@ -149,24 +170,66 @@
 
       if (guess === correct) {
         msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
-        setTimeout(() => {
+        gameResults.correct.push(currentCity.name);
+        
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Próximo Desafio";
+        nextBtn.onclick = () => {
           currentIndex++;
           if (currentIndex < allCities.length) {
             loadCityGame(allCities[currentIndex]);
           } else {
-            msg.innerHTML = `<span class='correct'>🎉 Fim do jogo! Você completou todas as cidades!</span>`;
-            document.getElementById("game-area").innerHTML = "";
+            showGameSummary();
           }
-        }, 1000);
+        };
+        
+        msg.appendChild(nextBtn);
       } else {
         attempts--;
         if (attempts === 0) {
           msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
+          gameResults.incorrect.push(currentCity.name);
+          
+          const nextBtn = document.createElement("button");
+          nextBtn.textContent = "Próximo Desafio";
+          nextBtn.onclick = () => {
+            currentIndex++;
+            if (currentIndex < allCities.length) {
+              loadCityGame(allCities[currentIndex]);
+            } else {
+              showGameSummary();
+            }
+          };
+          
+          msg.appendChild(nextBtn);
         } else {
           msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
         }
       }
       guessInput.value = "";
+    }
+
+    function showGameSummary() {
+      const container = document.getElementById("game-area");
+      container.innerHTML = `
+        <div class="summary">
+          <h2>Resumo da Fase Fácil</h2>
+          <h3>Cidades Acertadas (${gameResults.correct.length}):</h3>
+          ${gameResults.correct.map(city => `
+            <div class="summary-item summary-correct">${city}</div>
+          `).join('')}
+          
+          <h3>Cidades Não Descobertas (${gameResults.incorrect.length}):</h3>
+          ${gameResults.incorrect.map(city => `
+            <div class="summary-item summary-incorrect">${city}</div>
+          `).join('')}
+          
+          <div class="summary-stats">
+            <p>Total de Cidades: ${allCities.length}</p>
+            <p>Porcentagem de Acerto: ${((gameResults.correct.length / allCities.length) * 100).toFixed(2)}%</p>
+          </div>
+        </div>
+      `;
     }
 
     fetch("facil.json")
