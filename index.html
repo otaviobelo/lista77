@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -59,9 +60,6 @@
       border: none;
       border-radius: 5px;
     }
-    button.selected {
-      background-color: #25d366;
-    }
     .message {
       font-weight: bold;
       font-size: 18px;
@@ -101,7 +99,7 @@
 
   <script>
     function normalize(text) {
-      return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
     }
 
     let allCities = [];
@@ -123,6 +121,8 @@
       block.className = "word-block";
 
       city.words.forEach((word, wordIndex) => {
+        // Título removido para não exibir o nome da cidade
+
         const defText = document.createElement("p");
         defText.textContent = "Escolha uma definição:";
         block.appendChild(defText);
@@ -131,12 +131,9 @@
           const btn = document.createElement("button");
           btn.textContent = index + 1;
           btn.onclick = () => {
-  const defId = `definition-${wordIndex}`;
-  document.getElementById(defId).textContent = definition;
-  document.getElementById(defId).classList.remove("hidden");
-  btn.classList.add("selected");
-  btn.disabled = true;
-};
+            const defId = `definition-${wordIndex}`;
+            document.getElementById(defId).textContent = definition;
+            document.getElementById(defId).classList.remove("hidden");
           };
           block.appendChild(btn);
         });
