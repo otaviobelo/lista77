@@ -40,7 +40,10 @@
       margin-bottom: 15px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .definition { margin: 10px 0; }
+    .definition { 
+      margin: 10px 0; 
+      transition: background-color 0.3s ease;
+    }
     .hidden { display: none; }
     .preposition-note {
       color: white;
@@ -114,6 +117,9 @@
   </div>
 
   <script>
+    // Som de seleção de definição
+    const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+
     function normalize(text) {
       return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
     }
@@ -173,6 +179,9 @@
               // Se o botão já foi selecionado, não faz nada
               if (this.classList.contains('selected')) return;
 
+              // Toca o som de seleção
+              definitionSelectSound.play();
+
               // Remove a seleção de outros botões da mesma palavra
               const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
               wordButtons.forEach(b => {
@@ -184,11 +193,15 @@
               this.classList.add('selected');
               this.disabled = true;
 
-              // Mostra a definição
+              // Mostra a definição com fundo verde
               const defId = `definition-${wordIndex}`;
               const defPara = document.getElementById(defId);
               defPara.textContent = definition;
               defPara.classList.remove("hidden");
+              defPara.style.backgroundColor = '#e6f3e6';  // Verde claro
+              defPara.style.padding = '10px';
+              defPara.style.borderRadius = '5px';
+              defPara.style.fontWeight = 'bold';
             };
 
             definitionButtonsContainer.appendChild(btn);
