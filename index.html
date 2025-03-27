@@ -164,6 +164,29 @@
     }
     .summary-correct { background-color: #e6f3e6; }
     .summary-incorrect { background-color: #f3e6e6; }
+    
+    /* Novos estilos adicionados */
+    .progress-container {
+      width: 100%;
+      height: 20px;
+      background-color: #f1f1f1;
+      border-radius: 10px;
+      margin: 10px 0;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      border-radius: 10px;
+      transition: width 0.5s ease, background-color 0.5s ease;
+    }
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .summary-stats {
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
@@ -187,10 +210,20 @@
     </div>
 
     <div id="live-summary">
-      <h3>Resumo Parcial</h3>
-      <p>🏆 Pontuação: <span id="summary-score">0</span></p>
-      <p>✅ Acertos: <span id="summary-correct">0</span></p>
-      <p>❌ Erros: <span id="summary-incorrect">0</span></p>
+      <div class="summary-header">
+        <h3>Resumo Geral</h3>
+        <div>🏆 <span id="summary-score">0</span></div>
+      </div>
+      
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+      
+      <div class="summary-stats">
+        <p>✅ <span id="summary-correct">0</span> acertos</p>
+        <p>❌ <span id="summary-incorrect">0</span> erros</p>
+        <p>📊 <span id="summary-percentage">0</span>% de acerto</p>
+      </div>
     </div>
   </div>
 
@@ -214,6 +247,31 @@
       incorrect: []
     };
 
+    function updateProgressBar() {
+      const total = gameResults.correct.length + gameResults.incorrect.length;
+      const percentage = total > 0 ? (gameResults.correct.length / total) * 100 : 0;
+      
+      const progressBar = document.getElementById('progress-bar');
+      if (progressBar) {
+        progressBar.style.width = `${percentage}%`;
+        
+        // Cores dinâmicas baseadas na porcentagem
+        if (percentage >= 80) {
+          progressBar.style.backgroundColor = '#4CAF50'; // Verde
+        } else if (percentage >= 50) {
+          progressBar.style.backgroundColor = '#FFC107'; // Amarelo
+        } else {
+          progressBar.style.backgroundColor = '#F44336'; // Vermelho
+        }
+      }
+      
+      // Atualiza a porcentagem no placar
+      const percentageElement = document.getElementById('summary-percentage');
+      if (percentageElement) {
+        percentageElement.textContent = total > 0 ? percentage.toFixed(1) : '0';
+      }
+    }
+
     function initializeHistoryBanner() {
       const history = document.getElementById("history-content");
       const scoreSpan = document.createElement("span");
@@ -226,6 +284,8 @@
       welcomeSpan.className = "history-item";
       welcomeSpan.innerHTML = "👋 Bem-vindo ao QUE CIDADE É ESSA?! Escolha um nível e comece a jogar.";
       history.appendChild(welcomeSpan);
+      
+      updateProgressBar();
     }
 
     function updateScore(isCorrect) {
@@ -238,6 +298,8 @@
     function updateLiveSummary() {
       document.getElementById("summary-correct").textContent = gameResults.correct.length;
       document.getElementById("summary-incorrect").textContent = gameResults.incorrect.length;
+      document.getElementById("summary-score").textContent = totalScore;
+      updateProgressBar();
     }
 
     function updateHistoryBanner(cityName, wasCorrect) {
@@ -399,10 +461,6 @@
         .then(data => {
           allCities = data.sort(() => Math.random() - 0.5);
           currentIndex = 0;
-          totalScore = 0;
-          gameResults = { correct: [], incorrect: [] };
-          updateLiveSummary();
-          updateScore(false); // atualiza para 0
           loadCityGame(allCities[currentIndex]);
         });
     }
