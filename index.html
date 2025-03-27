@@ -18,45 +18,48 @@
       display: flex;
       justify-content: space-around;
     }
-    /* Novo estilo para o banner de resultados */
     .results-banner {
-      background-color: #f0f0f0;
-      padding: 10px;
-      overflow: hidden;
+      background-color: #E6E6FA;
       white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      padding: 10px 0;
       position: relative;
     }
     .results-banner-content {
       display: inline-block;
-      animation: slide-left 20s linear infinite;
       padding-left: 100%;
+      animation: scroll-left 20s linear infinite;
     }
-    .city-correct {
+    .results-banner-content span {
+      margin-right: 50px;
+      font-weight: bold;
+    }
+    .banner-correct {
       color: green;
-      margin-right: 20px;
-      font-weight: bold;
     }
-    .city-incorrect {
+    .banner-incorrect {
       color: red;
-      margin-right: 20px;
-      font-weight: bold;
     }
-    @keyframes slide-left {
+    @keyframes scroll-left {
       0% {
-        transform: translateX(0);
+        transform: translate(0, 0);
       }
       100% {
-        transform: translateX(-100%);
+        transform: translate(-100%, 0);
       }
     }
-    /* Resto do CSS anterior... */
     .tab {
       cursor: pointer;
       padding: 10px;
       flex: 1;
       text-align: center;
     }
-    /* ... restante do CSS anterior ... */
+    .tab.active {
+      background-color: #128c7e;
+      font-weight: bold;
+    }
+    /* Rest of the previous CSS remains the same */
   </style>
 </head>
 <body>
@@ -67,10 +70,9 @@
     <div class="tab" onclick="loadLevel('avancado.json', this)">Avançado</div>
   </div>
 
-  <!-- Novo banner de resultados -->
   <div class="results-banner">
     <div class="results-banner-content" id="results-banner-content">
-      Bem-vindo ao jogo! Adivinhe as cidades.
+      <!-- Results will be dynamically added here -->
     </div>
   </div>
 
@@ -80,54 +82,28 @@
   </div>
 
   <script>
-    // Som de seleção de definição
-    const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+    // Previous script remains the same, with these modifications:
 
-    // Sons de sucesso e falha
-    const failSound = new Audio('fail.mp3');
-    const successSound = new Audio('sucess.mp3');
-
-    function updateResultsBanner(city, isCorrect) {
-      const bannerContent = document.getElementById('results-banner-content');
-      const cityClass = isCorrect ? 'city-correct' : 'city-incorrect';
-      const cityText = `<span class="${cityClass}">${city}</span>`;
-      
-      // Adiciona a nova cidade ao início do banner
-      bannerContent.innerHTML = cityText + bannerContent.innerHTML;
-    }
-
-    function normalize(text) {
-      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
-    }
-
-    let allCities = [];
-    let currentIndex = 0;
-    let currentCity = null;
-    let attempts = 3;
-    let currentDifficulty = 'facil';
-    let gameResults = {
-      correct: [],
-      incorrect: []
-    };
-
-    // Resto do código permanece igual ao anterior...
-    // Apenas modificar a função checkGuess para incluir a chamada de updateResultsBanner
-
+    // Modify the checkGuess function to update the results banner
     function checkGuess() {
       const guessInput = document.getElementById("guess");
       const msg = document.getElementById("message");
       const guess = normalize(guessInput.value);
       const correct = normalize(currentCity.name);
+      const resultsBanner = document.getElementById("results-banner-content");
 
       if (guess === correct) {
         // Toca o som de sucesso
         successSound.play();
 
-        // Atualiza o banner com a cidade correta
-        updateResultsBanner(currentCity.name, true);
-
         msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
         gameResults.correct.push(currentCity.name);
+
+        // Add to results banner
+        const resultSpan = document.createElement("span");
+        resultSpan.className = "banner-correct";
+        resultSpan.textContent = `✅ ${currentCity.name}`;
+        resultsBanner.appendChild(resultSpan);
 
         const nextBtn = document.createElement("button");
         nextBtn.textContent = "Próximo Desafio";
@@ -147,11 +123,14 @@
 
         attempts--;
         if (attempts === 0) {
-          // Atualiza o banner com a cidade incorreta
-          updateResultsBanner(currentCity.name, false);
-
           msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
           gameResults.incorrect.push(currentCity.name);
+
+          // Add to results banner
+          const resultSpan = document.createElement("span");
+          resultSpan.className = "banner-incorrect";
+          resultSpan.textContent = `❌ ${currentCity.name}`;
+          resultsBanner.appendChild(resultSpan);
 
           const nextBtn = document.createElement("button");
           nextBtn.textContent = "Próximo Desafio";
@@ -172,8 +151,29 @@
       guessInput.value = "";
     }
 
-    // Resto do código permanece igual
-    // ... (funções loadCityGame, showGameSummary, loadLevel)
+    // Modify loadLevel to reset the results banner
+    function loadLevel(file, tabElement) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      tabElement.classList.add("active");
+      gameResults = { correct: [], incorrect: [] };
+      
+      // Clear previous results banner
+      const resultsBanner = document.getElementById("results-banner-content");
+      resultsBanner.innerHTML = "";
+      
+      // Rest of the function remains the same
+      currentDifficulty = file.replace('.json', '');
+      
+      fetch(file)
+        .then(res => res.json())
+        .then(data => {
+          allCities = data.sort(() => Math.random() - 0.5);
+          currentIndex = 0;
+          loadCityGame(allCities[currentIndex]);
+        });
+    }
+
+    // Rest of the previous script remains the same
   </script>
 </body>
 </html>
