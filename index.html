@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Que cidade é essa?</title>
+  <title>Que cidade é essa??</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -180,6 +180,7 @@
     let currentCity = null;
     let attempts = 3;
     let currentDifficulty = 'facil';
+    let totalScore = 0;
     let gameResults = {
       correct: [],
       incorrect: []
@@ -187,18 +188,47 @@
 
     function initializeHistoryBanner() {
       const history = document.getElementById("history-content");
+      
+      // Cria um elemento de pontuação no início do banner
+      const scoreSpan = document.createElement("span");
+      scoreSpan.id = "game-score";
+      scoreSpan.className = "history-item score-display";
+      scoreSpan.innerHTML = `🏆 Pontuação: ${totalScore}`;
+      history.appendChild(scoreSpan);
+
       const welcomeSpan = document.createElement("span");
       welcomeSpan.className = "history-item";
-      welcomeSpan.innerHTML = "👋 Bem-vindo ao WhatsCity! Escolha um nível e comece a jogar.";
+      welcomeSpan.innerHTML = "👋 Bem-vindo ao QUE CIDADE É ESSA?! Escolha um nível e comece a jogar.";
       history.appendChild(welcomeSpan);
+    }
+
+    function updateScore(isCorrect) {
+      // Incrementa pontuação em 10 para acerto, 0 para erro
+      totalScore += isCorrect ? 10 : 0;
+      
+      // Atualiza o elemento de pontuação
+      const scoreElement = document.getElementById("game-score");
+      if (scoreElement) {
+        scoreElement.innerHTML = `🏆 Pontuação: ${totalScore}`;
+      }
     }
 
     function updateHistoryBanner(cityName, wasCorrect) {
       const history = document.getElementById("history-content");
+      
+      // Remove a mensagem de boas-vindas após a primeira cidade
+      const welcomeItem = history.querySelector(".history-item:not(.score-display):not(.history-correct):not(.history-incorrect)");
+      if (welcomeItem) {
+        welcomeItem.remove();
+      }
+
       const span = document.createElement("span");
       span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
       span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
       history.appendChild(span);
+
+      // Atualiza a pontuação
+      updateScore(wasCorrect);
     }
 
     function loadCityGame(city) {
@@ -301,18 +331,18 @@
 
       if (guess === correct) {
         successSound.play();
-        msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
+        msg.innerHTML = `<span class='correct'>🎉 Correto! (+10 pontos)</span>`;
         gameResults.correct.push(currentCity.name);
         updateHistoryBanner(currentCity.name, true);
       } else {
         failSound.play();
         attempts--;
         if (attempts === 0) {
-          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
+          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}. (+0 pontos)</span>`;
           gameResults.incorrect.push(currentCity.name);
           updateHistoryBanner(currentCity.name, false);
         } else {
-          msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
+          msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts} (+0 pontos)</span>`;
         }
       }
       guessInput.value = "";
@@ -332,11 +362,36 @@
       }
     }
 
+    function loadLevel(file, tabElement) {
+      // Se for o primeiro carregamento, inicializa o histórico
+      if (!document.getElementById("history-content").children.length) {
+        initializeHistoryBanner();
+      }
+
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      tabElement.classList.add("active");
+      currentDifficulty = file.replace('.json', '');
+
+      fetch(file)
+        .then(res => res.json())
+        .then(data => {
+          allCities = data.sort(() => Math.random() - 0.5);
+          currentIndex = 0;
+          // Resetamos os resultados do jogo, mas não o histórico visual
+          gameResults = {
+            correct: [],
+            incorrect: []
+          };
+          loadCityGame(allCities[currentIndex]);
+        });
+    }
+
     function showGameSummary() {
       const container = document.getElementById("game-area");
       container.innerHTML = `
         <div class="summary">
           <h2>Resumo da Fase</h2>
+          <h3>Pontuação Total: 🏆 ${totalScore} pontos</h3>
           <h3>Cidades Acertadas (${gameResults.correct.length}):</h3>
           ${gameResults.correct.map(city => `<div class="summary-item summary-correct">${city}</div>`).join('')}
           <h3>Cidades Não Descobertas (${gameResults.incorrect.length}):</h3>
@@ -348,34 +403,6 @@
         </div>
       `;
     }
-
-    function loadLevel(file, tabElement) {
-  // Removemos a limpeza do histórico
-  // const history = document.getElementById("history-content");
-  // history.innerHTML = "";
-  
-  // Se for o primeiro carregamento, inicializa o histórico
-  if (!document.getElementById("history-content").children.length) {
-    initializeHistoryBanner();
-  }
-
-  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-  tabElement.classList.add("active");
-  currentDifficulty = file.replace('.json', '');
-
-  fetch(file)
-    .then(res => res.json())
-    .then(data => {
-      allCities = data.sort(() => Math.random() - 0.5);
-      currentIndex = 0;
-      // Resetamos os resultados do jogo, mas não o histórico visual
-      gameResults = {
-        correct: [],
-        incorrect: []
-      };
-      loadCityGame(allCities[currentIndex]);
-    });
-}
 
     initializeHistoryBanner();
     loadLevel("facil.json", document.querySelector(".tab.active"));
