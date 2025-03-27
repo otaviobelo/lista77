@@ -28,6 +28,7 @@
       background-color: #128c7e;
       font-weight: bold;
     }
+   <style>
     .history-banner {
       background-color: #f1f1f1;
       overflow: hidden;
@@ -45,33 +46,24 @@
       white-space: nowrap;
       position: absolute;
       will-change: transform;
-      animation: scroll-left 25s linear infinite;
+      animation: scroll-banner 25s linear infinite;
       height: 100%;
       line-height: 40px;
     }
     @media (max-width: 768px) {
       .history-content {
-        animation: scroll-left 15s linear infinite;
+        animation: scroll-banner 15s linear infinite;
       }
     }
-    .history-item {
-      margin: 0 30px;
-      display: inline-block;
-    }
-    .history-correct {
-      color: green;
-    }
-    .history-incorrect {
-      color: red;
-    }
-    @keyframes scroll-left {
-      0% {
+    @keyframes scroll-banner {
+      0%, 100% {
         transform: translateX(100%);
       }
-      100% {
+      50% {
         transform: translateX(-100%);
       }
     }
+</style>
     .container {
       padding: 20px;
       max-width: 750px;
