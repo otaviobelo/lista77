@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -196,12 +197,20 @@
               // Mostra a definição com fundo verde
               const defId = `definition-${wordIndex}`;
               const defPara = document.getElementById(defId);
-              defPara.textContent = definition;
               defPara.classList.remove("hidden");
-              defPara.style.backgroundColor = '#e6f3e6';  // Verde claro
-              defPara.style.padding = '10px';
-              defPara.style.borderRadius = '5px';
-              defPara.style.fontWeight = 'bold';
+              
+              // Cria uma div para o texto da definição
+              const definitionText = document.createElement('div');
+              definitionText.textContent = definition;
+              definitionText.style.backgroundColor = '#075e54';  // Verde similar ao da imagem
+              definitionText.style.color = 'white';
+              definitionText.style.padding = '10px';
+              definitionText.style.borderRadius = '5px';
+              definitionText.style.marginTop = '10px';
+              
+              // Limpa o parágrafo anterior e adiciona a nova div
+              defPara.innerHTML = '';
+              defPara.appendChild(definitionText);
             };
 
             definitionButtonsContainer.appendChild(btn);
