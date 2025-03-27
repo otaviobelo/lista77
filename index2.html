@@ -5,282 +5,255 @@
   <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body { 
-      font-family: Arial, sans-serif; 
-      background: white; 
-      padding: 20px; 
-      margin: 0; 
-      text-align: center; 
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ece5dd;
     }
-    .container { 
-      background: white; 
-      border-radius: 10px; 
-      padding: 25px; 
-      max-width: 750px; 
-      margin: auto; 
-      box-shadow: 0 0 10px rgba(0,0,0,0.1); 
+    .header {
+      background-color: #075e54;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-around;
     }
-    .word-block { 
-      margin-bottom: 25px; 
-      padding: 15px; 
-      border-radius: 10px; 
+    .tab {
+      cursor: pointer;
+      padding: 10px;
+      flex: 1;
+      text-align: center;
     }
-    .definition { margin: 15px 0; }
+    .tab.active {
+      background-color: #128c7e;
+      font-weight: bold;
+    }
+    .container {
+      padding: 20px;
+      max-width: 750px;
+      margin: auto;
+    }
+    .word-block {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .definition { margin: 10px 0; }
     .hidden { display: none; }
-    input[type="text"] { 
-      padding: 10px; 
-      width: 90%; 
-      max-width: 400px; 
-      margin-bottom: 15px; 
-      font-size: 16px; 
+    input[type="text"] {
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+      margin-bottom: 15px;
     }
-    button { 
-      padding: 10px; 
-      margin: 5px; 
-      font-size: 16px; 
-      cursor: pointer; 
-      min-width: 40px; 
+    button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #075e54;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
-    .message { 
-      margin-top: 20px; 
-      font-weight: bold; 
-      font-size: 18px; 
+    .message {
+      font-weight: bold;
+      font-size: 18px;
     }
     .correct { color: green; }
     .incorrect { color: red; }
-    .disabled { opacity: 0.5; pointer-events: none; }
-    .selected { 
-      background-color: #c8e6c9; 
-      border: 2px solid green; 
-      color: black; 
+    .buttons-container {
+      margin-top: 10px;
     }
-    .game-info { 
-      margin-bottom: 15px; 
-      font-weight: bold; 
+    .summary {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-top: 20px;
     }
-    .buttons-container { 
-      display: flex; 
-      justify-content: center; 
-      gap: 10px; 
+    .summary-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
     }
-    @media (max-width: 600px) {
-      .container { padding: 15px; }
-      button { 
-        width: 100%; 
-        max-width: 200px; 
-        margin: 8px auto; 
-        display: block; 
-      }
-      input[type="text"] { width: 100%; }
-      .message { font-size: 16px; }
-      h1 { font-size: 22px; }
-      h3 { font-size: 18px; }
-      .buttons-container { flex-direction: column; }
-    }
+    .summary-correct { background-color: #e6f3e6; }
+    .summary-incorrect { background-color: #f3e6e6; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Que cidade é essa?</h1>
-    <div class="game-info" id="game-progress"></div>
-
-    <div class="word-block" id="block-word1"><h3 id="label-word1"></h3><p>Escolha uma definição:</p><div id="buttons-word1"></div><p id="def-word1" class="definition hidden"></p></div>
-    <div class="word-block" id="block-word2"><h3 id="label-word2"></h3><p>Escolha uma definição:</p><div id="buttons-word2"></div><p id="def-word2" class="definition hidden"></p></div>
-    <div class="word-block" id="block-word3"><h3 id="label-word3"></h3><p>Escolha uma definição:</p><div id="buttons-word3"></div><p id="def-word3" class="definition hidden"></p></div>
-
-    <input type="text" id="guess" placeholder="Digite o nome da cidade" /><br />
-    <div class="buttons-container">
-      <button onclick="checkGuess()">Enviar</button>
-      <button onclick="skipCity()">Pular</button>
-    </div>
-    <div class="message" id="message"></div>
-    <button id="retry-button" onclick="resetGame()" style="display:none;">🔄 Tentar outra cidade</button>
+  <div class="header">
+    <div class="tab active" onclick="loadLevel('facil.json', this)">Fácil</div>
+    <div class="tab" onclick="loadLevel('medio.json', this)">Médio</div>
+    <div class="tab">Difícil</div>
+    <div class="tab">Avançado</div>
   </div>
 
-  <audio id="audio-success" src="success.mp3" preload="auto"></audio>
-  <audio id="audio-fail" src="fail.mp3" preload="auto"></audio>
+  <div class="container">
+    <h2>Que cidade é essa?</h2>
+    <div id="game-area"></div>
+  </div>
 
   <script>
-    let allCities = [];
-    let remainingCities = [];
-    let currentCity;
-    let correctAnswer;
-    let attempts;
-    let gameOver;
-    let selectedDefinitions = {};
-    let currentCityIndex = 0;
-    let skippedCities = 0;
-
     function normalize(text) {
-      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ç/g, "c").toLowerCase().trim();
+      return text.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
     }
 
-    function generateRandomColor() {
-      const h = Math.floor(Math.random() * 360);
-      const s = Math.floor(Math.random() * 30) + 70; // 70-100%
-      const l = Math.floor(Math.random() * 20) + 85; // 85-95%
-      return `hsl(${h}, ${s}%, ${l}%)`;
-    }
+    let allCities = [];
+    let currentIndex = 0;
+    let currentCity = null;
+    let attempts = 3;
+    let gameResults = {
+      correct: [],
+      incorrect: []
+    };
 
-    function setRandomBlockColors() {
-      const blocks = document.querySelectorAll('.word-block');
-      blocks.forEach(block => {
-        block.style.backgroundColor = generateRandomColor();
-      });
-    }
-
-    function createDefinitionButtons(wordKey, wordIndex) {
-      const container = document.getElementById(`buttons-${wordKey}`);
+    function loadCityGame(city) {
+      currentCity = city;
+      attempts = 3;
+      const container = document.getElementById("game-area");
       container.innerHTML = "";
-      for (let i = 0; i < 5; i++) {
-        const btn = document.createElement("button");
-        btn.textContent = i + 1;
-        btn.onclick = () => selectDefinition(wordKey, wordIndex, i + 1);
-        container.appendChild(btn);
-      }
-    }
 
-    function selectDefinition(wordKey, wordIndex, index) {
-      if (gameOver || selectedDefinitions[wordKey] !== null) return;
-      const defText = currentCity.words[wordIndex].definitions[index - 1];
-      document.getElementById(`def-${wordKey}`).textContent = defText;
-      document.getElementById(`def-${wordKey}`).classList.remove("hidden");
-      const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
-      buttons.forEach((btn, i) => {
-        if (i === index - 1) btn.classList.add("selected");
-        else btn.classList.add("disabled");
+      const block = document.createElement("div");
+      block.className = "word-block";
+
+      city.words.forEach((word, wordIndex) => {
+        const title = document.createElement("h3");
+        title.textContent = `Palavra ${wordIndex + 1}: ${word.label}`;
+        block.appendChild(title);
+
+        const defText = document.createElement("p");
+        defText.textContent = "Escolha uma definição:";
+        block.appendChild(defText);
+
+        word.definitions.forEach((definition, index) => {
+          const btn = document.createElement("button");
+          btn.textContent = index + 1;
+          btn.onclick = () => {
+            const defId = `definition-${wordIndex}`;
+            document.getElementById(defId).textContent = definition;
+            document.getElementById(defId).classList.remove("hidden");
+          };
+          block.appendChild(btn);
+        });
+
+        const defPara = document.createElement("p");
+        defPara.id = `definition-${wordIndex}`;
+        defPara.className = "definition hidden";
+        block.appendChild(defPara);
       });
-      selectedDefinitions[wordKey] = index;
-    }
 
-    function enableRemainingButtons() {
-      Object.keys(selectedDefinitions).forEach((wordKey) => {
-        const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
-        if (!gameOver && selectedDefinitions[wordKey] !== null) {
-          buttons.forEach((btn, j) => {
-            if (j !== selectedDefinitions[wordKey] - 1) btn.classList.remove("disabled");
-          });
-          selectedDefinitions[wordKey] = null;
-        }
-      });
-    }
+      container.appendChild(block);
 
-    function disableAllButtons() {
-      Object.keys(selectedDefinitions).forEach(wordKey => {
-        const buttons = document.getElementById(`buttons-${wordKey}`).querySelectorAll("button");
-        buttons.forEach(btn => btn.classList.add("disabled"));
-      });
-    }
+      const input = document.createElement("input");
+      input.type = "text";
+      input.placeholder = "Digite o nome da cidade";
+      input.id = "guess";
+      container.appendChild(input);
 
-    function skipCity() {
-      skippedCities++;
-      if (remainingCities.length === 0) {
-        document.getElementById("message").innerHTML = "<span class='correct'>🎉 Você completou todas as cidades! Obrigado por jogar!</span>";
-        document.getElementById("retry-button").style.display = "none";
-        return;
-      }
-      
-      const messageDiv = document.getElementById("message");
-      messageDiv.innerHTML = `<span class="incorrect">🏃 Cidade pulada: <strong>${currentCity.name}</strong>. Você já pulou ${skippedCities} cidade(s).</span>`;
-      
-      resetGame();
+      const buttonsDiv = document.createElement("div");
+      buttonsDiv.className = "buttons-container";
+
+      const submitBtn = document.createElement("button");
+      submitBtn.textContent = "Enviar";
+      submitBtn.onclick = checkGuess;
+      buttonsDiv.appendChild(submitBtn);
+
+      container.appendChild(buttonsDiv);
+
+      const msg = document.createElement("div");
+      msg.id = "message";
+      msg.className = "message";
+      container.appendChild(msg);
     }
 
     function checkGuess() {
-      if (gameOver) return;
       const guessInput = document.getElementById("guess");
-      const messageDiv = document.getElementById("message");
-      const retryBtn = document.getElementById("retry-button");
-      const userGuess = normalize(guessInput.value);
+      const msg = document.getElementById("message");
+      const guess = normalize(guessInput.value);
+      const correct = normalize(currentCity.name);
 
-      if (userGuess === correctAnswer) {
-        messageDiv.innerHTML = `<span class="correct">🎉 Parabéns! Você acertou: <strong>${currentCity.name}</strong>.</span>`;
-        gameOver = true;
-        disableAllButtons();
-        retryBtn.style.display = "inline-block";
-        document.getElementById("audio-success").play();
+      if (guess === correct) {
+        msg.innerHTML = `<span class='correct'>🎉 Correto!</span>`;
+        gameResults.correct.push(currentCity.name);
+
+        const nextBtn = document.createElement("button");
+        nextBtn.textContent = "Próximo Desafio";
+        nextBtn.onclick = () => {
+          currentIndex++;
+          if (currentIndex < allCities.length) {
+            loadCityGame(allCities[currentIndex]);
+          } else {
+            showGameSummary();
+          }
+        };
+
+        msg.appendChild(nextBtn);
       } else {
         attempts--;
         if (attempts === 0) {
-          messageDiv.innerHTML = `<span class="incorrect">😢 Suas tentativas acabaram! A cidade correta era <strong>${currentCity.name}</strong>.</span>`;
-          gameOver = true;
-          disableAllButtons();
-          retryBtn.style.display = "inline-block";
-          document.getElementById("audio-fail").play();
+          msg.innerHTML = `<span class='incorrect'>😢 Fim de jogo! A cidade era ${currentCity.name}.</span>`;
+          gameResults.incorrect.push(currentCity.name);
+
+          const nextBtn = document.createElement("button");
+          nextBtn.textContent = "Próximo Desafio";
+          nextBtn.onclick = () => {
+            currentIndex++;
+            if (currentIndex < allCities.length) {
+              loadCityGame(allCities[currentIndex]);
+            } else {
+              showGameSummary();
+            }
+          };
+
+          msg.appendChild(nextBtn);
         } else {
-          messageDiv.innerHTML = `<span class="incorrect">❌ Resposta incorreta. Você ainda tem ${attempts} tentativa(s).</span>`;
-          enableRemainingButtons();
+          msg.innerHTML = `<span class='incorrect'>❌ Errado! Tentativas restantes: ${attempts}</span>`;
         }
       }
-
       guessInput.value = "";
     }
 
-    function updateGameProgress() {
-      const progressDiv = document.getElementById("game-progress");
-      progressDiv.textContent = `Cidade ${currentCityIndex + 1} de ${allCities.length} - Faltam ${allCities.length - currentCityIndex - 1} cidades`;
+    function showGameSummary() {
+      const container = document.getElementById("game-area");
+      container.innerHTML = `
+        <div class="summary">
+          <h2>Resumo da Fase</h2>
+          <h3>Cidades Acertadas (${gameResults.correct.length}):</h3>
+          ${gameResults.correct.map(city => `
+            <div class="summary-item summary-correct">${city}</div>
+          `).join('')}
+
+          <h3>Cidades Não Descobertas (${gameResults.incorrect.length}):</h3>
+          ${gameResults.incorrect.map(city => `
+            <div class="summary-item summary-incorrect">${city}</div>
+          `).join('')}
+
+          <div class="summary-stats">
+            <p>Total de Cidades: ${allCities.length}</p>
+            <p>Porcentagem de Acerto: ${((gameResults.correct.length / allCities.length) * 100).toFixed(2)}%</p>
+          </div>
+        </div>
+      `;
     }
 
-    function initializeGame() {
-      setRandomBlockColors();
-      const totalWords = currentCity.words.length;
-      for (let i = 0; i < 3; i++) {
-        const wordKey = `word${i + 1}`;
-        const block = document.getElementById(`block-${wordKey}`);
-        const def = document.getElementById(`def-${wordKey}`);
-        def.classList.add("hidden");
-        def.textContent = "";
-        if (i < totalWords) {
-          block.style.display = "block";
-          document.getElementById(`label-${wordKey}`).textContent = `Palavra ${i + 1}: ${currentCity.words[i].label}`;
-          createDefinitionButtons(wordKey, i);
-          selectedDefinitions[wordKey] = null;
-        } else {
-          block.style.display = "none";
-        }
-      }
-      document.getElementById("guess").value = "";
-      document.getElementById("message").innerHTML = "";
-      document.getElementById("retry-button").style.display = "none";
-      updateGameProgress();
-    }
-
-    function resetGame() {
-      if (remainingCities.length === 0) {
-        document.getElementById("message").innerHTML = "<span class='correct'>🎉 Você completou todas as cidades! Obrigado por jogar!</span>";
-        document.getElementById("retry-button").style.display = "none";
-        return;
-      }
-      currentCity = remainingCities.shift();
-      currentCityIndex++;
-      correctAnswer = normalize(currentCity.name);
-      attempts = 5;
-      gameOver = false;
-      selectedDefinitions = {};
-      initializeGame();
-      window.scrollTo(0, 0);
-    }
-
-    window.onload = () => {
-      fetch("cidades.json")
+    function loadLevel(file, tabElement) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      tabElement.classList.add("active");
+      gameResults = { correct: [], incorrect: [] };
+      fetch(file)
         .then(res => res.json())
         .then(data => {
-          allCities = data;
-          remainingCities = [...allCities];
-
-          // Embaralhar as cidades com algoritmo Fisher-Yates
-          for (let i = remainingCities.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [remainingCities[i], remainingCities[j]] = [remainingCities[j], remainingCities[i]];
-          }
-
-          resetGame();
-        })
-        .catch(err => {
-          document.getElementById("message").innerHTML = "<span class='incorrect'>Erro ao carregar as cidades.</span>";
-          console.error("Erro ao carregar cidades.json", err);
+          allCities = data.sort(() => Math.random() - 0.5);
+          currentIndex = 0;
+          loadCityGame(allCities[currentIndex]);
         });
-    };
+    }
+
+    // Carrega inicialmente o nível fácil
+    loadLevel("facil.json", document.querySelector(".tab.active"));
   </script>
 </body>
 </html>
