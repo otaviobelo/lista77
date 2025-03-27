@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<style>
+  <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -72,11 +72,20 @@
     .history-incorrect {
       color: red;
     }
-    .container {
-      padding: 20px;
-      max-width: 750px;
+
+    .main-wrapper {
+      display: flex;
+      flex-direction: row;
+      max-width: 1200px;
       margin: auto;
+      padding: 20px;
+      gap: 20px;
     }
+
+    .container {
+      flex: 2;
+    }
+
     .word-block {
       background: white;
       border-radius: 10px;
@@ -117,7 +126,6 @@
     }
     button.selected {
       background-color: #128c7e;
-      color: white;
     }
     button:disabled {
       opacity: 0.7;
@@ -132,12 +140,23 @@
     .buttons-container {
       margin-top: 10px;
     }
-    .summary {
+
+    .summary, #live-summary {
       background-color: white;
       border-radius: 10px;
       padding: 20px;
-      margin-top: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
+
+    #live-summary {
+      flex: 1;
+      min-width: 250px;
+      max-height: fit-content;
+      position: sticky;
+      top: 20px;
+      align-self: flex-start;
+    }
+
     .summary-item {
       margin-bottom: 10px;
       padding: 10px;
@@ -145,7 +164,7 @@
     }
     .summary-correct { background-color: #e6f3e6; }
     .summary-incorrect { background-color: #f3e6e6; }
-</style>
+  </style>
 </head>
 <body>
   <div class="header">
@@ -159,10 +178,19 @@
     <div id="history-content" class="history-content"></div>
   </div>
 
-  <div class="container">
-    <h2>Que cidade é essa?</h2>
-    <div id="game-area">
-      <p><strong>BEM-VINDO AO GAME WHATSCITY</strong></p>
+  <div class="main-wrapper">
+    <div class="container">
+      <h2>Que cidade é essa?</h2>
+      <div id="game-area">
+        <p><strong>BEM-VINDO AO GAME WHATSCITY</strong></p>
+      </div>
+    </div>
+
+    <div id="live-summary">
+      <h3>Resumo Parcial</h3>
+      <p>🏆 Pontuação: <span id="summary-score">0</span></p>
+      <p>✅ Acertos: <span id="summary-correct">0</span></p>
+      <p>❌ Erros: <span id="summary-incorrect">0</span></p>
     </div>
   </div>
 
@@ -188,8 +216,6 @@
 
     function initializeHistoryBanner() {
       const history = document.getElementById("history-content");
-      
-      // Cria um elemento de pontuação no início do banner
       const scoreSpan = document.createElement("span");
       scoreSpan.id = "game-score";
       scoreSpan.className = "history-item score-display";
@@ -203,32 +229,29 @@
     }
 
     function updateScore(isCorrect) {
-      // Incrementa pontuação em 10 para acerto, 0 para erro
       totalScore += isCorrect ? 10 : 0;
-      
-      // Atualiza o elemento de pontuação
       const scoreElement = document.getElementById("game-score");
-      if (scoreElement) {
-        scoreElement.innerHTML = `🏆 Pontuação: ${totalScore}`;
-      }
+      if (scoreElement) scoreElement.innerHTML = `🏆 Pontuação: ${totalScore}`;
+      document.getElementById("summary-score").textContent = totalScore;
+    }
+
+    function updateLiveSummary() {
+      document.getElementById("summary-correct").textContent = gameResults.correct.length;
+      document.getElementById("summary-incorrect").textContent = gameResults.incorrect.length;
     }
 
     function updateHistoryBanner(cityName, wasCorrect) {
       const history = document.getElementById("history-content");
-      
-      // Remove a mensagem de boas-vindas após a primeira cidade
       const welcomeItem = history.querySelector(".history-item:not(.score-display):not(.history-correct):not(.history-incorrect)");
-      if (welcomeItem) {
-        welcomeItem.remove();
-      }
+      if (welcomeItem) welcomeItem.remove();
 
       const span = document.createElement("span");
       span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
       span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
       history.appendChild(span);
 
-      // Atualiza a pontuação
       updateScore(wasCorrect);
+      updateLiveSummary();
     }
 
     function loadCityGame(city) {
@@ -363,7 +386,6 @@
     }
 
     function loadLevel(file, tabElement) {
-      // Se for o primeiro carregamento, inicializa o histórico
       if (!document.getElementById("history-content").children.length) {
         initializeHistoryBanner();
       }
@@ -377,11 +399,10 @@
         .then(data => {
           allCities = data.sort(() => Math.random() - 0.5);
           currentIndex = 0;
-          // Resetamos os resultados do jogo, mas não o histórico visual
-          gameResults = {
-            correct: [],
-            incorrect: []
-          };
+          totalScore = 0;
+          gameResults = { correct: [], incorrect: [] };
+          updateLiveSummary();
+          updateScore(false); // atualiza para 0
           loadCityGame(allCities[currentIndex]);
         });
     }
@@ -409,3 +430,4 @@
   </script>
 </body>
 </html>
+
