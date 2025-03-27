@@ -105,7 +105,7 @@
     <div class="tab active" onclick="loadLevel('facil.json', this)">Fácil</div>
     <div class="tab" onclick="loadLevel('medio.json', this)">Médio</div>
     <div class="tab" onclick="loadLevel('dificil.json', this)">Difícil</div>
-    <div class="tab">Avançado</div>
+    <div class="tab" onclick="loadLevel('avancado.json', this)">Avançado</div>
   </div>
 
   <div class="container">
@@ -142,18 +142,21 @@
         defText.textContent = "Escolha uma definição:";
         block.appendChild(defText);
 
-        // Lógica específica para nível Difícil
-        if (currentDifficulty === 'dificil' && wordIndex === 1) {
-          // Segunda palavra: apenas mostra nota sobre preposição
+        // Lógica específica para níveis Difícil e Avançado
+        if ((currentDifficulty === 'dificil' && wordIndex === 1) || 
+            (currentDifficulty === 'avancado' && wordIndex === 2)) {
+          // Segunda palavra no Difícil ou terceira palavra no Avançado
           const prepositionNote = document.createElement("p");
-          prepositionNote.textContent = "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES";
+          prepositionNote.textContent = currentDifficulty === 'dificil' 
+            ? "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO" 
+            : "A TERCEIRA PALAVRA É UMA PREPOSIÇÃO";
           prepositionNote.className = "preposition-note";
           block.appendChild(prepositionNote);
           
           const defPara = document.createElement("p");
           defPara.id = `definition-${wordIndex}`;
           defPara.className = "definition";
-          defPara.textContent = word.definitions[0];
+          defPara.textContent = word.definitions[0] || '';
           block.appendChild(defPara);
         } else {
           // Comportamento padrão para outros níveis e outras palavras
