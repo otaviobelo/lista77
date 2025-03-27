@@ -43,9 +43,13 @@
     .definition { margin: 10px 0; }
     .hidden { display: none; }
     .preposition-note {
-      color: #666;
-      font-style: italic;
+      color: white;
+      font-weight: bold;
+      padding: 10px;
       margin: 10px 0;
+      background-color: #075e54;
+      border-radius: 5px;
+      text-align: center;
     }
     input[type="text"] {
       padding: 10px;
@@ -142,7 +146,7 @@
         if (currentDifficulty === 'dificil' && wordIndex === 1) {
           // Segunda palavra: apenas mostra nota sobre preposição
           const prepositionNote = document.createElement("p");
-          prepositionNote.textContent = "Esta palavra é uma preposição.";
+          prepositionNote.textContent = "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO";
           prepositionNote.className = "preposition-note";
           block.appendChild(prepositionNote);
           
