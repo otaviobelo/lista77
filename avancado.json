@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Espírito Santo do Dourado",
+    "words": [
+      {
+        "label": "Espírito",
+        "definitions": [
+          "Parte imaterial do ser humano, associada à alma ou consciência.",
+          "Força invisível considerada divina ou sobrenatural.",
+          "Ânimo ou disposição interior que motiva uma pessoa."
+        ]
+      },
+      {
+        "label": "Santo",
+        "definitions": [
+          "Que possui santidade ou pureza espiritual.",
+          "Pessoa canonizada pela Igreja Católica.",
+          "Termo usado em nomes de lugares e pessoas veneradas."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Dourado",
+        "definitions": [
+          "Que tem cor de ouro ou brilho dourado.",
+          "Peixe comum em rios brasileiros.",
+          "Que é valorizado, precioso ou simbólico de riqueza."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Monte Santo de Minas",
+    "words": [
+      {
+        "label": "Monte",
+        "definitions": [
+          "Elevação natural do terreno; colina ou montanha.",
+          "Grande quantidade acumulada de algo.",
+          "Lugar alto e simbólico em diversas culturas."
+        ]
+      },
+      {
+        "label": "Santo",
+        "definitions": [
+          "Pessoa considerada sagrada por suas virtudes.",
+          "Associado à fé, religiosidade ou pureza.",
+          "Termo presente em nomes de cidades e pessoas religiosas."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Minas",
+        "definitions": [
+          "Locais de extração de minerais do subsolo.",
+          "Referência ao estado de Minas Gerais.",
+          "Espaços subterrâneos onde há exploração de riquezas."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "São Thomé das Letras",
+    "words": [
+      {
+        "label": "São",
+        "definitions": [
+          "Forma reduzida de 'santo' usada antes de nomes próprios.",
+          "Usado em nomes religiosos ou geográficos.",
+          "Expressão comum em cidades com tradição católica."
+        ]
+      },
+      {
+        "label": "Thomé",
+        "definitions": [
+          "Nome próprio masculino de origem bíblica.",
+          "Referência ao apóstolo Tomé, conhecido por duvidar da fé.",
+          "Nome usado em lugares com influência religiosa."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Letras",
+        "definitions": [
+          "Símbolos que formam palavras e linguagens escritas.",
+          "Área do conhecimento que estuda idiomas e literatura.",
+          "Referência à cultura, comunicação e escrita."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "São Pedro da União",
+    "words": [
+      {
+        "label": "São",
+        "definitions": [
+          "Forma reduzida de 'santo' usada antes de nomes próprios.",
+          "Prefixo tradicional em nomes de cidades religiosas.",
+          "Usado para homenagear figuras cristãs."
+        ]
+      },
+      {
+        "label": "Pedro",
+        "definitions": [
+          "Nome próprio masculino, comum em países cristãos.",
+          "Referência ao apóstolo Pedro, um dos discípulos de Jesus.",
+          "Nome presente em locais com forte herança católica."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "União",
+        "definitions": [
+          "Ato ou efeito de unir ou reunir.",
+          "Estado de harmonia e cooperação entre partes.",
+          "Representação da junção de pessoas, ideias ou territórios."
+        ]
+      }
+    ]
+  },
+  {
+    "name": "São Sebastião do Paraíso",
+    "words": [
+      {
+        "label": "São",
+        "definitions": [
+          "Abreviação de 'santo', usada antes de nomes religiosos.",
+          "Prefixo comum em nomes de localidades com tradição cristã.",
+          "Indica veneração a um santo específico."
+        ]
+      },
+      {
+        "label": "Sebastião",
+        "definitions": [
+          "Nome próprio masculino de origem grega.",
+          "Nome de um mártir cristão venerado pela Igreja Católica.",
+          "Homenagem comum em cidades de tradição religiosa."
+        ]
+      },
+      {
+        "label": "(preposição)",
+        "definitions": []
+      },
+      {
+        "label": "Paraíso",
+        "definitions": [
+          "Lugar ideal de paz e felicidade eterna.",
+          "Região simbólica de perfeição espiritual ou natural.",
+          "Figura mitológica ou religiosa relacionada ao céu."
+        ]
+      }
+    ]
+  }
+]
