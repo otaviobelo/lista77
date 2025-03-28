@@ -5,7 +5,7 @@
   <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-   body {
+  body {
   margin: 0;
   font-family: Arial, sans-serif;
   background-color: #ece5dd;
@@ -32,8 +32,10 @@
   font-weight: bold;
 }
 
-/* Removido: .history-banner e .history-content */
-/* Removido: .history-item, .history-correct, .history-incorrect */
+/* HISTÓRICO REMOVIDO VISUALMENTE */
+.history-banner, .history-content {
+  display: none !important;
+}
 
 .main-wrapper {
   display: flex;
@@ -116,7 +118,9 @@ button:disabled {
 .summary, #live-summary {
   background-color: white;
   border-radius: 10px;
-  padding: 20px;
+  padding: 15px;
+  font-size: 14px;
+  line-height: 1.4;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -125,8 +129,8 @@ button:disabled {
   min-width: 250px;
   max-height: fit-content;
   position: sticky;
-  top: 50px;
-  align-self: flex-start;
+  top: 20px;
+  align-self: start;
 }
 
 .summary-item {
@@ -150,7 +154,7 @@ button:disabled {
 
   #live-summary {
     position: fixed;
-    top: 60px; /* logo abaixo do header */
+    top: 60px;
     left: 0;
     width: 100%;
     z-index: 999;
@@ -158,18 +162,24 @@ button:disabled {
     padding: 10px;
     font-size: 14px;
     line-height: 1.4;
+
+    /* MOSTRAR APENAS 2 LINHAS */
+    max-height: 3.5em;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 
   .main-wrapper {
     flex-direction: column;
-    padding-top: 170px; /* menor espaço reservado para header + resumo */
+    padding-top: 170px;
   }
 
   .container {
     width: 100%;
   }
 }
-
 
   </style>
 </head>
