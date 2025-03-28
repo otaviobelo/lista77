@@ -6,212 +6,164 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #ece5dd;
-}
-.header {
-  background-color: #075e54;
-  color: white;
-  padding: 10px;
-  font-size: 16px;
-  display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  width: 100%;
-  box-sizing: border-box;
-}
-.tab {
-  cursor: pointer;
-  padding: 8px 5px;
-  flex: 1;
-  text-align: center;
-  min-width: 60px;
-  font-size: 14px;
-}
-.tab.active {
-  background-color: #128c7e;
-  font-weight: bold;
-}
-.history-banner {
-  display: none;
-}
-.main-wrapper {
-  display: flex;
-  flex-direction: row;
-  max-width: 1200px;
-  margin: auto;
-  padding: 15px;
-  gap: 15px;
-  padding-top: 60px;
-}
-.container {
-  flex: 2;
-}
-.word-block {
-  background: white;
-  border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 12px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-.definition { 
-  margin: 8px 0; 
-  transition: background-color 0.3s ease;
-  font-size: 15px;
-}
-.hidden { display: none; }
-.preposition-note {
-  color: white;
-  font-weight: bold;
-  padding: 8px;
-  margin: 8px 0;
-  background-color: #075e54;
-  border-radius: 4px;
-  text-align: center;
-  font-size: 14px;
-}
-input[type="text"] {
-  padding: 8px;
-  width: calc(100% - 20px);
-  max-width: 400px;
-  font-size: 15px;
-  margin-bottom: 12px;
-  box-sizing: border-box;
-}
-button {
-  padding: 8px 12px;
-  margin: 4px;
-  font-size: 15px;
-  cursor: pointer;
-  background-color: #075e54;
-  color: white;
-  border: none;
-  border-radius: 4px;
-}
-button.selected {
-  background-color: #128c7e;
-}
-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-.message {
-  font-weight: bold;
-  font-size: 16px;
-  margin: 10px 0;
-}
-.correct { color: green; }
-.incorrect { color: red; }
-.buttons-container {
-  margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
-}
-.summary, #live-summary {
-  background-color: white;
-  border-radius: 8px;
-  padding: 15px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-#live-summary {
-  flex: 1;
-  min-width: 0;
-  max-height: fit-content;
-  position: sticky;
-  top: 50px;
-  align-self: flex-start;
-}
-.progress-container {
-  width: 100%;
-  height: 18px;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  margin: 8px 0;
-  overflow: hidden;
-}
-.progress-bar {
-  height: 100%;
-  border-radius: 8px;
-  transition: width 0.5s ease, background-color 0.5s ease;
-}
-.summary-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-.summary-header h3 {
-  margin: 0;
-  font-size: 16px;
-}
-.summary-stats {
-  margin-top: 10px;
-}
-.summary-stats p {
-  margin: 6px 0;
-  font-size: 14px;
-}
-h2 {
-  font-size: 20px;
-  margin-top: 0;
-}
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ece5dd;
+    }
+    .header {
+      background-color: #075e54;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-around;
+    }
+    .tab {
+      cursor: pointer;
+      padding: 10px;
+      flex: 1;
+      text-align: center;
+    }
+    .tab.active {
+      background-color: #128c7e;
+      font-weight: bold;
+    }
+    .history-banner {
+      background-color: #f1f1f1;
+      overflow: hidden;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      font-size: 16px;
+      font-weight: bold;
+      position: relative;
+      height: 40px;
+      line-height: 40px;
+    }
+    .history-content {
+      display: inline-block;
+      white-space: nowrap;
+      position: absolute;
+      will-change: transform;
+      animation: scroll-banner 50s linear infinite;
+      height: 100%;
+      line-height: 40px;
+    }
+    @media (max-width: 768px) {
+      .history-content {
+        animation: scroll-banner 15s linear infinite;
+      }
+    }
+    @keyframes scroll-banner {
+      0%, 100% {
+        transform: translateX(100%);
+      }
+      50% {
+        transform: translateX(-100%);
+      }
+    }
+    .history-item {
+      margin: 0 30px;
+      display: inline-block;
+    }
+    .history-correct {
+      color: green;
+    }
+    .history-incorrect {
+      color: red;
+    }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
-  #live-summary {
-    position: static; /* Alteração importante */
-    order: 1;
-    width: 100%;
-    margin-bottom: 15px;
-    max-height: none;
-    overflow-y: visible;
-  }
+    .main-wrapper {
+      display: flex;
+      flex-direction: row;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      gap: 20px;
+    }
 
-  .container {
-    order: 2;
-    margin-bottom: 0; /* Remova a margem adicional */
-  }
+    .container {
+      flex: 2;
+    }
 
-  .main-wrapper {
-    flex-direction: column;
-  }
-}
-  #live-summary {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box;
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  .container {
-    order: 2;
-    margin-bottom: 220px;
-  }
-  button {
-    padding: 8px 10px;
-    font-size: 14px;
-  }
-  .progress-container {
-    height: 15px;
-  }
-  h2 {
-    font-size: 18px;
-  }
-  .summary, #live-summary {
-    padding: 12px;
-  }
-}
+    .word-block {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .definition { 
+      margin: 10px 0; 
+      transition: background-color 0.3s ease;
+    }
+    .hidden { display: none; }
+    .preposition-note {
+      color: white;
+      font-weight: bold;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #075e54;
+      border-radius: 5px;
+      text-align: center;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #075e54;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button.selected {
+      background-color: #128c7e;
+    }
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .message {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+    .buttons-container {
+      margin-top: 10px;
+    }
+
+    .summary, #live-summary {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    #live-summary {
+      flex: 1;
+      min-width: 250px;
+      max-height: fit-content;
+      position: sticky;
+      top: 20px;
+      align-self: flex-start;
+    }
+
+    .summary-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .summary-correct { background-color: #e6f3e6; }
+    .summary-incorrect { background-color: #f3e6e6; }
   </style>
 </head>
 <body>
@@ -235,20 +187,10 @@ h2 {
     </div>
 
     <div id="live-summary">
-      <div class="summary-header">
-        <h3>Resumo Geral</h3>
-        <div>🏆 <span id="summary-score">0</span></div>
-      </div>
-      
-      <div class="progress-container">
-        <div id="progress-bar" class="progress-bar"></div>
-      </div>
-      
-      <div class="summary-stats">
-        <p>✅ <span id="summary-correct">0</span> acertos</p>
-        <p>❌ <span id="summary-incorrect">0</span> erros</p>
-        <p>📊 <span id="summary-percentage">0</span>% de acerto</p>
-      </div>
+      <h3>Resumo Parcial</h3>
+      <p>🏆 Pontuação: <span id="summary-score">0</span></p>
+      <p>✅ Acertos: <span id="summary-correct">0</span></p>
+      <p>❌ Erros: <span id="summary-incorrect">0</span></p>
     </div>
   </div>
 
@@ -272,31 +214,6 @@ h2 {
       incorrect: []
     };
 
-    function updateProgressBar() {
-      const total = gameResults.correct.length + gameResults.incorrect.length;
-      const percentage = total > 0 ? (gameResults.correct.length / total) * 100 : 0;
-      
-      const progressBar = document.getElementById('progress-bar');
-      if (progressBar) {
-        progressBar.style.width = `${percentage}%`;
-        
-        // Cores dinâmicas baseadas na porcentagem
-        if (percentage >= 80) {
-          progressBar.style.backgroundColor = '#4CAF50'; // Verde
-        } else if (percentage >= 50) {
-          progressBar.style.backgroundColor = '#FFC107'; // Amarelo
-        } else {
-          progressBar.style.backgroundColor = '#F44336'; // Vermelho
-        }
-      }
-      
-      // Atualiza a porcentagem no placar
-      const percentageElement = document.getElementById('summary-percentage');
-      if (percentageElement) {
-        percentageElement.textContent = total > 0 ? percentage.toFixed(1) : '0';
-      }
-    }
-
     function initializeHistoryBanner() {
       const history = document.getElementById("history-content");
       const scoreSpan = document.createElement("span");
@@ -309,8 +226,6 @@ h2 {
       welcomeSpan.className = "history-item";
       welcomeSpan.innerHTML = "👋 Bem-vindo ao QUE CIDADE É ESSA?! Escolha um nível e comece a jogar.";
       history.appendChild(welcomeSpan);
-      
-      updateProgressBar();
     }
 
     function updateScore(isCorrect) {
@@ -323,8 +238,6 @@ h2 {
     function updateLiveSummary() {
       document.getElementById("summary-correct").textContent = gameResults.correct.length;
       document.getElementById("summary-incorrect").textContent = gameResults.incorrect.length;
-      document.getElementById("summary-score").textContent = totalScore;
-      updateProgressBar();
     }
 
     function updateHistoryBanner(cityName, wasCorrect) {
@@ -486,6 +399,10 @@ h2 {
         .then(data => {
           allCities = data.sort(() => Math.random() - 0.5);
           currentIndex = 0;
+          totalScore = 0;
+          gameResults = { correct: [], incorrect: [] };
+          updateLiveSummary();
+          updateScore(false); // atualiza para 0
           loadCityGame(allCities[currentIndex]);
         });
     }
