@@ -388,28 +388,30 @@ button:disabled {
       }
     }
 
-    function loadLevel(file, tabElement) {
-      if (!document.getElementById("history-content").children.length) {
-        initializeHistoryBanner();
-      }
+  function loadLevel(file, tabElement) {
+  if (!document.getElementById("history-content").children.length) {
+    initializeHistoryBanner();
+  }
 
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      tabElement.classList.add("active");
-      currentDifficulty = file.replace('.json', '');
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+  tabElement.classList.add("active");
+  currentDifficulty = file.replace('.json', '');
 
-      fetch(file)
-        .then(res => res.json())
-        .then(data => {
-          allCities = data.sort(() => Math.random() - 0.5);
-          currentIndex = 0;
-          totalScore = 0;
-          gameResults = { correct: [], incorrect: [] };
-          updateLiveSummary();
-          updateScore(false); // atualiza para 0
-          loadCityGame(allCities[currentIndex]);
-        });
-    }
+  fetch(file)
+    .then(res => res.json())
+    .then(data => {
+      allCities = data.sort(() => Math.random() - 0.5);
+      currentIndex = 0;
 
+      // ❌ Remova ou comente estas duas linhas:
+      // totalScore = 0;
+      // gameResults = { correct: [], incorrect: [] };
+
+      updateLiveSummary();
+      updateScore(false); // Atualiza a pontuação visualmente
+      loadCityGame(allCities[currentIndex]);
+    });
+}
     function showGameSummary() {
       const container = document.getElementById("game-area");
       container.innerHTML = `
