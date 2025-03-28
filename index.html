@@ -152,24 +152,27 @@ button:disabled {
     z-index: 1000;
   }
 
-  #live-summary {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    width: 100%;
-    z-index: 999;
-    box-sizing: border-box;
-    padding: 10px;
-    font-size: 14px;
-    line-height: 1.4;
+#live-summary {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  box-sizing: border-box;
+  padding: 10px;
+  font-size: 14px;
+  line-height: 1.4;
 
-    /* MOSTRAR APENAS 2 LINHAS */
-    max-height: 3.5em;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#live-summary .summary-line {
+  display: flex;
+  justify-content: space-around;
+}
+
 
   .main-wrapper {
     flex-direction: column;
