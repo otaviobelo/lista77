@@ -5,195 +5,234 @@
   <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-  body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background-color: #ece5dd;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #ece5dd;
+    }
+    .header {
+      background-color: #075e54;
+      color: white;
+      padding: 15px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-around;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .tab {
+      cursor: pointer;
+      padding: 10px;
+      flex: 1;
+      text-align: center;
+    }
+    .tab.active {
+      background-color: #128c7e;
+      font-weight: bold;
+    }
+    .history-banner {
+      background-color: #f1f1f1;
+      overflow: hidden;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      font-size: 16px;
+      font-weight: bold;
+      position: relative;
+      height: 40px;
+      line-height: 40px;
+    }
+    .history-content {
+      display: inline-block;
+      white-space: nowrap;
+      position: absolute;
+      will-change: transform;
+      animation: scroll-banner 50s linear infinite;
+      height: 100%;
+      line-height: 40px;
+    }
+    @media (max-width: 768px) {
+      .history-banner {
+        display: none;
+      }
+      .history-content {
+        animation: scroll-banner 15s linear infinite;
+      }
+    }
+    @keyframes scroll-banner {
+      0%, 100% {
+        transform: translateX(100%);
+      }
+      50% {
+        transform: translateX(-100%);
+      }
+    }
+    .history-item {
+      margin: 0 30px;
+      display: inline-block;
+    }
+    .history-correct {
+      color: green;
+    }
+    .history-incorrect {
+      color: red;
+    }
 
-.header {
-  background-color: #075e54;
-  color: white;
-  padding: 15px;
-  font-size: 18px;
-  display: flex;
-  justify-content: space-around;
-}
+    .main-wrapper {
+      display: flex;
+      flex-direction: row;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+      gap: 20px;
+    }
 
-.tab {
-  cursor: pointer;
-  padding: 10px;
-  flex: 1;
-  text-align: center;
-}
+    .container {
+      flex: 2;
+    }
 
-.tab.active {
-  background-color: #128c7e;
-  font-weight: bold;
-}
+    .word-block {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .definition { 
+      margin: 10px 0; 
+      transition: background-color 0.3s ease;
+    }
+    .hidden { display: none; }
+    .preposition-note {
+      color: white;
+      font-weight: bold;
+      padding: 10px;
+      margin: 10px 0;
+      background-color: #075e54;
+      border-radius: 5px;
+      text-align: center;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 90%;
+      max-width: 400px;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+    button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #075e54;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button.selected {
+      background-color: #128c7e;
+    }
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .message {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .correct { color: green; }
+    .incorrect { color: red; }
+    .buttons-container {
+      margin-top: 10px;
+    }
 
-/* HISTÓRICO REMOVIDO VISUALMENTE */
-.history-banner, .history-content {
-  display: none !important;
-}
+    .summary, #live-summary {
+      background-color: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
 
-.main-wrapper {
-  display: flex;
-  flex-direction: row;
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
-  gap: 20px;
-}
+    #live-summary {
+      flex: 1;
+      min-width: 250px;
+      max-height: fit-content;
+      position: sticky;
+      top: 20px;
+      align-self: flex-start;
+    }
 
-.container {
-  flex: 2;
-}
+    .summary-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .summary-correct { background-color: #e6f3e6; }
+    .summary-incorrect { background-color: #f3e6e6; }
 
-.word-block {
-  background: white;
-  border-radius: 10px;
-  padding: 15px;
-  margin-bottom: 15px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.definition { 
-  margin: 10px 0; 
-  transition: background-color 0.3s ease;
-}
-
-.hidden { display: none; }
-
-.preposition-note {
-  color: white;
-  font-weight: bold;
-  padding: 10px;
-  margin: 10px 0;
-  background-color: #075e54;
-  border-radius: 5px;
-  text-align: center;
-}
-
-input[type="text"] {
-  padding: 10px;
-  width: 90%;
-  max-width: 400px;
-  font-size: 16px;
-  margin-bottom: 15px;
-}
-
-button {
-  padding: 10px;
-  margin: 5px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #075e54;
-  color: white;
-  border: none;
-  border-radius: 5px;
-}
-
-button.selected {
-  background-color: #128c7e;
-}
-
-button:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.message {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-.correct { color: green; }
-.incorrect { color: red; }
-
-.buttons-container {
-  margin-top: 10px;
-}
-
-.summary, #live-summary {
-  background-color: white;
-  border-radius: 10px;
-  padding: 15px;
-  font-size: 14px;
-  line-height: 1.4;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-#live-summary {
-  flex: 1;
-  min-width: 250px;
-  max-height: fit-content;
-  position: sticky;
-  top: 20px;
-  align-self: start;
-}
-
-.summary-item {
-  margin-bottom: 10px;
-  padding: 10px;
-  border-radius: 5px;
-}
-
-.summary-correct { background-color: #e6f3e6; }
-.summary-incorrect { background-color: #f3e6e6; }
-
-/* MOBILE: Header e resumo fixos no topo */
-@media (max-width: 768px) {
-  .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-  }
-
-#live-summary {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 20vh; /* 20% da altura da tela */
-  background-color: white;
-  z-index: 999;
-  box-sizing: border-box;
-  padding: 10px;
-  font-size: 14px;
-  line-height: 1.4;
-  border-top: 1px solid #ccc;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
-}
-
-#live-summary .summary-title {
-  text-align: center;
-  font-weight: bold;
-}
-
-#live-summary .summary-line {
-  display: flex;
-  justify-content: space-around;
-}
-
-
-
-  .main-wrapper {
-    flex-direction: column;
-    padding-top: 170px;
-  }
-
-  .container {
-    width: 100%;
-  }
-}
-
+    /* Estilos para mobile */
+    @media (max-width: 768px) {
+      .header {
+        padding: 10px;
+        font-size: 16px;
+      }
+      
+      .tab {
+        padding: 8px 5px;
+        font-size: 14px;
+      }
+      
+      .main-wrapper {
+        flex-direction: column;
+        padding: 10px;
+        gap: 10px;
+      }
+      
+      #live-summary {
+        position: sticky;
+        bottom: 0;
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        background-color: #075e54;
+        color: white;
+        z-index: 50;
+        box-shadow: 0 -2px 5px rgba(0,0,0,0.2);
+        padding: 15px;
+      }
+      
+      #live-summary h3 {
+        color: white;
+        margin-top: 0;
+      }
+      
+      #live-summary p {
+        margin: 8px 0;
+      }
+      
+      .container {
+        margin-bottom: 120px;
+      }
+      
+      .word-block {
+        padding: 10px;
+      }
+      
+      button {
+        padding: 8px;
+        font-size: 14px;
+      }
+      
+      input[type="text"] {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 14px;
+      }
+      
+      .message {
+        font-size: 16px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -245,17 +284,19 @@ button:disabled {
     };
 
     function initializeHistoryBanner() {
-      const history = document.getElementById("history-content");
-      const scoreSpan = document.createElement("span");
-      scoreSpan.id = "game-score";
-      scoreSpan.className = "history-item score-display";
-      scoreSpan.innerHTML = `🏆 Pontuação: ${totalScore}`;
-      history.appendChild(scoreSpan);
+      if (window.innerWidth > 768) {
+        const history = document.getElementById("history-content");
+        const scoreSpan = document.createElement("span");
+        scoreSpan.id = "game-score";
+        scoreSpan.className = "history-item score-display";
+        scoreSpan.innerHTML = `🏆 Pontuação: ${totalScore}`;
+        history.appendChild(scoreSpan);
 
-      const welcomeSpan = document.createElement("span");
-      welcomeSpan.className = "history-item";
-      welcomeSpan.innerHTML = "👋 Bem-vindo ao QUE CIDADE É ESSA?! Escolha um nível e comece a jogar.";
-      history.appendChild(welcomeSpan);
+        const welcomeSpan = document.createElement("span");
+        welcomeSpan.className = "history-item";
+        welcomeSpan.innerHTML = "👋 Bem-vindo ao QUE CIDADE É ESSA?! Escolha um nível e comece a jogar.";
+        history.appendChild(welcomeSpan);
+      }
     }
 
     function updateScore(isCorrect) {
@@ -271,15 +312,16 @@ button:disabled {
     }
 
     function updateHistoryBanner(cityName, wasCorrect) {
-      const history = document.getElementById("history-content");
-      const welcomeItem = history.querySelector(".history-item:not(.score-display):not(.history-correct):not(.history-incorrect)");
-      if (welcomeItem) welcomeItem.remove();
+      if (window.innerWidth > 768) {
+        const history = document.getElementById("history-content");
+        const welcomeItem = history.querySelector(".history-item:not(.score-display):not(.history-correct):not(.history-incorrect)");
+        if (welcomeItem) welcomeItem.remove();
 
-      const span = document.createElement("span");
-      span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
-      span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
-      history.appendChild(span);
-
+        const span = document.createElement("span");
+        span.className = `history-item ${wasCorrect ? 'history-correct' : 'history-incorrect'}`;
+        span.innerHTML = wasCorrect ? `✅ ${cityName}` : `❌ ${cityName}`;
+        history.appendChild(span);
+      }
       updateScore(wasCorrect);
       updateLiveSummary();
     }
@@ -415,30 +457,28 @@ button:disabled {
       }
     }
 
-  function loadLevel(file, tabElement) {
-  if (!document.getElementById("history-content").children.length) {
-    initializeHistoryBanner();
-  }
+    function loadLevel(file, tabElement) {
+      if (!document.getElementById("history-content").children.length) {
+        initializeHistoryBanner();
+      }
 
-  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-  tabElement.classList.add("active");
-  currentDifficulty = file.replace('.json', '');
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      tabElement.classList.add("active");
+      currentDifficulty = file.replace('.json', '');
 
-  fetch(file)
-    .then(res => res.json())
-    .then(data => {
-      allCities = data.sort(() => Math.random() - 0.5);
-      currentIndex = 0;
+      fetch(file)
+        .then(res => res.json())
+        .then(data => {
+          allCities = data.sort(() => Math.random() - 0.5);
+          currentIndex = 0;
+          totalScore = 0;
+          gameResults = { correct: [], incorrect: [] };
+          updateLiveSummary();
+          updateScore(false);
+          loadCityGame(allCities[currentIndex]);
+        });
+    }
 
-      // ❌ Remova ou comente estas duas linhas:
-      // totalScore = 0;
-      // gameResults = { correct: [], incorrect: [] };
-
-      updateLiveSummary();
-      updateScore(false); // Atualiza a pontuação visualmente
-      loadCityGame(allCities[currentIndex]);
-    });
-}
     function showGameSummary() {
       const container = document.getElementById("game-area");
       container.innerHTML = `
