@@ -49,9 +49,21 @@
       height: 100%;
       line-height: 40px;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 768px)  {
+  .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+  }
+    {
       .history-content {
         animation: scroll-banner 15s linear infinite;
+         body {
+    padding-top: 60px; /* espaço para o header fixo */
+  }
+}
       }
     }
     @keyframes scroll-banner {
