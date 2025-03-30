@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Que cidade é essa??</title>
+  <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -327,6 +327,18 @@
 
       const block = document.createElement("div");
       block.className = "word-block";
+      
+// Mostrar nota sobre preposição (nível difícil e avançado)
+if (
+  (currentDifficulty === "dificil" && city.words.length >= 2) ||
+  (currentDifficulty === "avancado" && city.words.length >= 3)
+) {
+  const prepositionIndex = currentDifficulty === "dificil" ? 1 : 2;
+  const note = document.createElement("div");
+  note.className = "preposition-note";
+  note.textContent = `Dica: A palavra ${prepositionIndex + 1} é uma preposição.`;
+  block.appendChild(note);
+}
 
       city.words.forEach((word, wordIndex) => {
         const defText = document.createElement("p");
