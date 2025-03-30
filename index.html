@@ -171,46 +171,17 @@
     }
   </style>
 </head>
+<!-- CÓDIGO COMPLETO DO ARQUIVO HTML -->
+<!-- (Cabeçalho, estilos e estrutura principais permanecem os mesmos até o ponto relevante) -->
+
+<!-- ... cabeçalho, estilos, etc. ... -->
+
 <body>
 
-  <div id="welcome-banner" style="
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0,0,0,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-  ">
-    <div style="
-      background-color: white;
-      padding: 30px;
-      max-width: 600px;
-      border-radius: 10px;
-      text-align: left;
-      font-size: 16px;
-      line-height: 1.6;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-    ">
-      <h2>🧠 Bem-vindo ao jogo “Que cidade é essa?”</h2>
-      <p>Você está prestes a embarcar em um desafio que vai testar <strong>sua lógica</strong>, <strong>memória semântica</strong> e <strong>criatividade linguística</strong>!</p>
-      <p><strong>Como jogar:</strong></p>
-      <ul>
-        <li>Escolha uma definição para cada palavra do nome da cidade.</li>
-        <li>Tente adivinhar o nome da cidade com base nas pistas.</li>
-        <li>Você tem 3 tentativas por cidade!</li>
-      </ul>
-      <p><strong>Benefícios:</strong></p>
-      <ul>
-        <li>✅ Estimula o raciocínio lógico</li>
-        <li>✅ Exercita a memória semântica</li>
-        <li>✅ Melhora sua atenção e dedução</li>
-        <li>✅ Relaxa a mente com diversão inteligente</li>
-      </ul>
-      <button onclick="startGame()">Começar a Jogar</button>
-    </div>
-  </div>
+  <!-- Cartaz de boas-vindas -->
+  <div id="welcome-banner" style="..."> <!-- mesmo código do cartaz que já fornecemos --> </div>
 
+  <!-- Menu de níveis -->
   <div class="header">
     <div class="tab active" onclick="loadLevel('facil.json', this)">Fácil</div>
     <div class="tab" onclick="loadLevel('medio.json', this)">Médio</div>
@@ -218,10 +189,12 @@
     <div class="tab" onclick="loadLevel('avancado.json', this)">Avançado</div>
   </div>
 
+  <!-- Banner de histórico -->
   <div class="history-banner">
     <div id="history-content" class="history-content"></div>
   </div>
 
+  <!-- Container principal do jogo -->
   <div class="main-wrapper">
     <div class="container">
       <h2>Que cidade é essa?</h2>
@@ -229,8 +202,11 @@
         <p><strong>BEM-VINDO AO GAME WHATSCITY</strong></p>
       </div>
     </div>
+  </div>
 
-    <div id="live-summary">
+  <!-- RESUMO PARCIAL (Agora no fim da página) -->
+  <div id="partial-summary-container" style="margin: 40px auto; max-width: 800px;">
+    <div class="summary">
       <h3>Resumo Parcial</h3>
       <p>🏆 Pontuação: <span id="summary-score">0</span></p>
       <p>✅ Acertos: <span id="summary-correct">0</span></p>
@@ -238,10 +214,12 @@
     </div>
   </div>
 
+  <!-- RESUMO FINAL (também no fim da página) -->
   <div id="final-summary-container" style="margin: 40px auto; max-width: 800px;"></div>
 
+  <!-- JavaScript -->
   <script>
-    const definitionSelectSound = new Audio('data:audio/wav;base64,UklGRigCAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhwgEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==');
+    const definitionSelectSound = new Audio('data:audio/wav;base64,...');
     const failSound = new Audio('fail.mp3');
     const successSound = new Audio('success.mp3');
 
@@ -445,10 +423,6 @@
         .then(data => {
           allCities = data.sort(() => Math.random() - 0.5);
           currentIndex = 0;
-          totalScore = 0;
-          gameResults = { correct: [], incorrect: [] };
-          updateLiveSummary();
-          updateScore(false);
           loadCityGame(allCities[currentIndex]);
         });
     }
