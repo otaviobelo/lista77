@@ -449,7 +449,8 @@
       loadCityGame(allCities[currentIndex]);
       
       // Adicione esta linha para rolar até o topo da área de jogo
-      document.getElementById("game-area").scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
     })
     .catch(err => {
       console.error("Erro ao carregar as cidades:", err);
@@ -572,6 +573,7 @@
           currentIndex++;
           if (currentIndex < allCities.length) {
             loadCityGame(allCities[currentIndex]);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           } else {
             showGameSummary();
           }
