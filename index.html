@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Que cidade é essa??</title>
+  <title>Que cidade é essa?</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
     html, body {
@@ -436,25 +436,28 @@
       updateLiveSummary();
     }
 
-    function loadLevel(file, tabElement) {
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      tabElement.classList.add("active");
-      currentDifficulty = file.replace('.json', '');
+  function loadLevel(file, tabElement) {
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+  tabElement.classList.add("active");
+  currentDifficulty = file.replace('.json', '');
 
-      fetch(file)
-        .then(res => res.json())
-        .then(data => {
-          allCities = data.sort(() => Math.random() - 0.5);
-          currentIndex = 0;
-          loadCityGame(allCities[currentIndex]);
-        })
-        .catch(err => {
-          console.error("Erro ao carregar as cidades:", err);
-          // Mostrar mensagem amigável para o usuário
-          const container = document.getElementById("game-area");
-          container.innerHTML = "<p class='incorrect'>Não foi possível carregar as cidades. Verifique sua conexão e tente novamente.</p>";
-        });
-    }
+  fetch(file)
+    .then(res => res.json())
+    .then(data => {
+      allCities = data.sort(() => Math.random() - 0.5);
+      currentIndex = 0;
+      loadCityGame(allCities[currentIndex]);
+      
+      // Adicione esta linha para rolar até o topo da área de jogo
+      document.getElementById("game-area").scrollIntoView({ behavior: 'smooth', block: 'start' });
+    })
+    .catch(err => {
+      console.error("Erro ao carregar as cidades:", err);
+      // Mostrar mensagem amigável para o usuário
+      const container = document.getElementById("game-area");
+      container.innerHTML = "<p class='incorrect'>Não foi possível carregar as cidades. Verifique sua conexão e tente novamente.</p>";
+    });
+}
 
     function loadCityGame(city) {
       currentCity = city;
