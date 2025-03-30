@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title>Que cidade é essa?</title>
+  <title>Que cidade é essa??</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -72,7 +72,6 @@
     .history-incorrect {
       color: red;
     }
-
     .main-wrapper {
       display: flex;
       flex-direction: row;
@@ -81,11 +80,9 @@
       padding: 20px;
       gap: 20px;
     }
-
     .container {
       flex: 2;
     }
-
     .word-block {
       background: white;
       border-radius: 10px;
@@ -93,8 +90,8 @@
       margin-bottom: 15px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .definition { 
-      margin: 10px 0; 
+    .definition {
+      margin: 10px 0;
       transition: background-color 0.3s ease;
     }
     .hidden { display: none; }
@@ -140,7 +137,6 @@
     .buttons-container {
       margin-top: 10px;
     }
-
     .summary {
       background-color: white;
       border-radius: 10px;
@@ -148,7 +144,6 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       margin-bottom: 40px;
     }
-
     .summary-item {
       margin-bottom: 10px;
       padding: 10px;
@@ -156,30 +151,57 @@
     }
     .summary-correct { background-color: #e6f3e6; }
     .summary-incorrect { background-color: #f3e6e6; }
-
-    #live-summary {
-      flex: 1;
-      min-width: 250px;
-      max-height: fit-content;
-      position: sticky;
-      top: 20px;
-      align-self: flex-start;
-      background-color: white;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
   </style>
 </head>
-<!-- CÓDIGO COMPLETO DO ARQUIVO HTML -->
-<!-- (Cabeçalho, estilos e estrutura principais permanecem os mesmos até o ponto relevante) -->
-
-<!-- ... cabeçalho, estilos, etc. ... -->
-
 <body>
 
   <!-- Cartaz de boas-vindas -->
-  <div id="welcome-banner" style="..."> <!-- mesmo código do cartaz que já fornecemos --> </div>
+  <div id="welcome-banner" style="
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  ">
+    <div style="
+      background-color: white;
+      padding: 30px;
+      max-width: 600px;
+      border-radius: 10px;
+      text-align: left;
+      font-size: 16px;
+      line-height: 1.6;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    ">
+      <h2>🧠 Bem-vindo ao jogo “Que cidade é essa?”</h2>
+      <p>Você está prestes a embarcar em um desafio que vai testar <strong>sua lógica</strong>, <strong>memória semântica</strong> e <strong>criatividade linguística</strong>!</p>
+      <p><strong>Como jogar:</strong></p>
+      <ul>
+        <li>Escolha uma definição para cada palavra do nome da cidade.</li>
+        <li>Tente adivinhar o nome da cidade com base nas pistas.</li>
+        <li>Você tem 3 tentativas por cidade!</li>
+      </ul>
+      <p><strong>Benefícios:</strong></p>
+      <ul>
+        <li>✅ Estimula o raciocínio lógico</li>
+        <li>✅ Exercita a memória semântica</li>
+        <li>✅ Melhora sua atenção e dedução</li>
+        <li>✅ Relaxa a mente com diversão inteligente</li>
+      </ul>
+      <button onclick="startGame()" style="
+        margin-top: 20px;
+        background-color: #075e54;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+      ">Começar a Jogar</button>
+    </div>
+  </div>
 
   <!-- Menu de níveis -->
   <div class="header">
@@ -194,7 +216,7 @@
     <div id="history-content" class="history-content"></div>
   </div>
 
-  <!-- Container principal do jogo -->
+  <!-- Área principal do jogo -->
   <div class="main-wrapper">
     <div class="container">
       <h2>Que cidade é essa?</h2>
@@ -204,20 +226,22 @@
     </div>
   </div>
 
-  <!-- RESUMO PARCIAL (Agora no fim da página) -->
-  <div id="partial-summary-container" style="margin: 40px auto; max-width: 800px;">
-    <div class="summary">
-      <h3>Resumo Parcial</h3>
-      <p>🏆 Pontuação: <span id="summary-score">0</span></p>
-      <p>✅ Acertos: <span id="summary-correct">0</span></p>
-      <p>❌ Erros: <span id="summary-incorrect">0</span></p>
+  <!-- Resumo Parcial (mesma largura da área do jogo) -->
+  <div class="main-wrapper">
+    <div class="container">
+      <div class="summary">
+        <h3>Resumo Parcial</h3>
+        <p>🏆 Pontuação: <span id="summary-score">0</span></p>
+        <p>✅ Acertos: <span id="summary-correct">0</span></p>
+        <p>❌ Erros: <span id="summary-incorrect">0</span></p>
+      </div>
     </div>
   </div>
 
-  <!-- RESUMO FINAL (também no fim da página) -->
+  <!-- Resumo Final -->
   <div id="final-summary-container" style="margin: 40px auto; max-width: 800px;"></div>
 
-  <!-- JavaScript -->
+  <!-- Scripts -->
   <script>
     const definitionSelectSound = new Audio('data:audio/wav;base64,...');
     const failSound = new Audio('fail.mp3');
@@ -258,8 +282,7 @@
 
     function updateScore(isCorrect) {
       totalScore += isCorrect ? 10 : 0;
-      const scoreElement = document.getElementById("game-score");
-      if (scoreElement) scoreElement.innerHTML = `🏆 Pontuação: ${totalScore}`;
+      document.getElementById("game-score").innerHTML = `🏆 Pontuação: ${totalScore}`;
       document.getElementById("summary-score").textContent = totalScore;
     }
 
@@ -282,6 +305,20 @@
       updateLiveSummary();
     }
 
+    function loadLevel(file, tabElement) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      tabElement.classList.add("active");
+      currentDifficulty = file.replace('.json', '');
+
+      fetch(file)
+        .then(res => res.json())
+        .then(data => {
+          allCities = data.sort(() => Math.random() - 0.5);
+          currentIndex = 0;
+          loadCityGame(allCities[currentIndex]);
+        });
+    }
+
     function loadCityGame(city) {
       currentCity = city;
       attempts = 3;
@@ -296,58 +333,26 @@
         defText.textContent = "Escolha uma definição:";
         block.appendChild(defText);
 
-        if ((currentDifficulty === 'dificil' && wordIndex === 1) || (currentDifficulty === 'avancado' && wordIndex === 2)) {
-          const prepositionNote = document.createElement("p");
-          prepositionNote.textContent = currentDifficulty === 'dificil' 
-            ? "A SEGUNDA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES" 
-            : "A TERCEIRA PALAVRA É UMA PREPOSIÇÃO, COM OU SEM VARIAÇÕES";
-          prepositionNote.className = "preposition-note";
-          block.appendChild(prepositionNote);
+        const defPara = document.createElement("p");
+        defPara.id = `definition-${wordIndex}`;
+        defPara.className = "definition hidden";
+        block.appendChild(defPara);
 
-          const defPara = document.createElement("p");
-          defPara.id = `definition-${wordIndex}`;
-          defPara.className = "definition";
-          defPara.textContent = word.definitions[0] || '';
-          block.appendChild(defPara);
-        } else {
-          const definitionButtonsContainer = document.createElement("div");
-          definitionButtonsContainer.className = `definition-buttons-${wordIndex}`;
-
-          word.definitions.forEach((definition, index) => {
-            const btn = document.createElement("button");
-            btn.textContent = index + 1;
-            btn.onclick = function () {
-              if (this.classList.contains('selected')) return;
-              definitionSelectSound.play();
-              const wordButtons = document.querySelectorAll(`.definition-buttons-${wordIndex} button`);
-              wordButtons.forEach(b => {
-                b.classList.remove('selected');
-                b.disabled = false;
-              });
-              this.classList.add('selected');
-              this.disabled = true;
-              const defPara = document.getElementById(`definition-${wordIndex}`);
-              defPara.classList.remove("hidden");
-              const definitionText = document.createElement('div');
-              definitionText.textContent = definition;
-              definitionText.style.backgroundColor = '#075e54';
-              definitionText.style.color = 'white';
-              definitionText.style.padding = '10px';
-              definitionText.style.borderRadius = '5px';
-              definitionText.style.marginTop = '10px';
-              defPara.innerHTML = '';
-              defPara.appendChild(definitionText);
-            };
-            definitionButtonsContainer.appendChild(btn);
-          });
-
-          block.appendChild(definitionButtonsContainer);
-
-          const defPara = document.createElement("p");
-          defPara.id = `definition-${wordIndex}`;
-          defPara.className = "definition hidden";
-          block.appendChild(defPara);
-        }
+        const buttons = document.createElement("div");
+        word.definitions.forEach((definition, index) => {
+          const btn = document.createElement("button");
+          btn.textContent = index + 1;
+          btn.onclick = function () {
+            if (this.classList.contains('selected')) return;
+            definitionSelectSound.play();
+            block.querySelectorAll("button").forEach(b => b.classList.remove("selected"));
+            this.classList.add("selected");
+            defPara.classList.remove("hidden");
+            defPara.innerHTML = `<div style="background:#075e54;color:white;padding:10px;border-radius:5px;margin-top:10px">${definition}</div>`;
+          };
+          buttons.appendChild(btn);
+        });
+        block.appendChild(buttons);
       });
 
       container.appendChild(block);
@@ -411,20 +416,6 @@
         };
         msg.appendChild(nextBtn);
       }
-    }
-
-    function loadLevel(file, tabElement) {
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      tabElement.classList.add("active");
-      currentDifficulty = file.replace('.json', '');
-
-      fetch(file)
-        .then(res => res.json())
-        .then(data => {
-          allCities = data.sort(() => Math.random() - 0.5);
-          currentIndex = 0;
-          loadCityGame(allCities[currentIndex]);
-        });
     }
 
     function showGameSummary() {
